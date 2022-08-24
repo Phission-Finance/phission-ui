@@ -46,13 +46,13 @@ export default function Navbar() {
     return (
         <>
             <Head>
-                <title>Layouts Example</title>
+                <title>Phission Finance</title>
             </Head>
             <header className={styles.header}>
                 <div className={styles.logo} >
                     <Link href="/">
                         <a>
-                            <Image src={logo} alt={"phission"} layout='fill' objectFit='contain' unoptimized={true}/>
+                            <Image src={logo} alt={"phission"} layout='fill' objectFit='contain'/>
                         </a>
                     </Link>
                 </div>

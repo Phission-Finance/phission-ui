@@ -5,8 +5,8 @@
   "homepage": "https://phission.github.io/phission-ui",
   "scripts": {
     "predeploy": "npm run build && npm run export ",
-    "deploy": "gh-pages -d build -t true",
-    "dev": "next dev",
+    "deploy": "gh-pages --no-history -d build -t true",
+    "dev": "NODE_OPTIONS='--inspect'  next dev",
     "build": "next build ",
     "export": "next export -o build/ && touch ./build/.nojekyll",
     "start": "next start",
