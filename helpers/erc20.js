@@ -60,7 +60,14 @@ export async function approve(contract, spender, amount) {
         signer
     );
 
-    return await ethContract.approve(spender, amount.toString())
+    return ethContract.approve(spender, amount.toString()).then((tx) => {
+        return provider.waitForTransaction(tx.hash).then(()=>{
+                return true
+            })
+    }).catch(()=>{
+        return false
+    })
+
 }
 
 export async function balanceOf(contract, address) {
