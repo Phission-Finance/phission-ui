@@ -5,20 +5,26 @@ import {BigNumber, utils} from "ethers";
 import {roundString} from "../helpers/erc20";
 
 function FarmRow({farm}) {
+    const [init, setInit] = useState(false)
     const [tvl, setTvl] = useState(BigNumber.from(0))
     const [apr, setAPR] = useState(BigNumber.from(0))
 
-    farm.tvlFunc().then((val) => {
-        if (!isNaN(val)) {
-            setTvl(val)
-        }
-    })
+    if (!init) {
+        farm.tvlFunc().then((val) => {
+            if (!isNaN(val)) {
+                setTvl(val)
+            }
+        })
 
-    farm.aprFunc().then((val) => {
-        if (!isNaN(val)) {
-            setAPR(val)
-        }
-    })
+        farm.aprFunc().then((val) => {
+            if (!isNaN(val)) {
+                setAPR(val)
+            }
+        })
+        setInit(true)
+    }
+
+
 
     return (
         <tr>

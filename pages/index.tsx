@@ -6,7 +6,7 @@ import SwapValue from '../components/swapValue'
 import Countdown from '../components/countdown'
 import FarmRow from '../components/farmRow'
 import {useEffect, useState} from "react";
-import {staking, tokenDictionary, trades, uniswapRouter, weth} from "../const/const";
+import {phi, staking, tokenDictionary, trades, uniswapRouter, weth, weths, wethw} from "../const/const";
 import {checkAllowance, checkBalance, approve, roundString} from '../helpers/erc20'
 import aprCalc from '../helpers/apr'
 import BN from "bn.js";
@@ -21,15 +21,39 @@ const expectedMergeDate = "2022/09/15 03:03:00"
 const Home: NextPage = () => {
 
 
+    const [init, setInit] = useState(false)
     const [tvl, setTvl] = useState(BigNumber.from(0))
+    const [wethwETH, setWethwETH] = useState("0")
+    const [wethsETH, setWethsETH] = useState("0")
+    const [phiETH, setPhiETH] = useState("0")
+    const [phisETH, setPhisETH] = useState("0")
+    const [phiwETH, setPhiwETH] = useState("0")
+    const [lpsLp, setLpsLp] = useState("0")
+    const [lpwLp, setLpwLp] = useState("0")
 
-    if (!aprCalc.init) {
-        aprCalc.initialize().then(() => {
-            console.log("APRCalculator initialized", aprCalc)
-            aprCalc.tvl().then((val: BigNumber) => {
-                setTvl(val)
-            }).catch((err) => console.log("TVL Error", err))
-        }).catch((e) => console.log("Error", e))
+
+    if (!init) {
+        if (!aprCalc.init) {
+            aprCalc.initialize().then(() => {
+                console.log("APRCalculator initialized", aprCalc)
+                handleUpdateValues()
+
+            }).catch((e) => console.log("Error", e))
+        } else {
+            handleUpdateValues()
+        }
+        setInit(true)
+    }
+
+    function handleUpdateValues() {
+        setTvl(aprCalc.tvl())
+        setWethwETH(aprCalc.wethwInEth().toFixed(2))
+        setWethsETH(aprCalc.wethsInEth().toFixed(2))
+        setPhiETH(aprCalc.phiInEth().toFixed(2))
+        setPhisETH(aprCalc.phisInEth().toFixed(2))
+        setPhiwETH(aprCalc.phiwInEth().toFixed(2))
+        setLpsLp(aprCalc.lpsInLp().toFixed(2))
+        setLpwLp(aprCalc.lpwInLp().toFixed(2))
     }
 
 
@@ -43,24 +67,27 @@ const Home: NextPage = () => {
         </div>
         <div className={styles.main}>
             <div className={styles.row}>
-                <Value label={"TVL (ETH)"} value={tvl} token={weth}/>
-                <Value label={"TVL ($)"}  value={aprCalc.ethToUsd(tvl)} token={weth}/>
+                <Value label={"TVL"} value={tvl} token={weth} symbol={"Ξ"}/>
+                <Value label={"TVL"}  value={aprCalc.ethToUsd(tvl)} token={weth} symbol={"$"}/>
             </div>
             <div className={styles.row}>
-                <Value label={"ETHw / ETH"} value={"1"} token={undefined}/>
-                <Value label={"ETHs / ETH"}  value={"1500"} token={undefined}/>
+                <Value label={"WETHw"} value={wethwETH} token={undefined} symbol={"Ξ"}/>
+                <Value label={"WETHs"}  value={wethsETH} token={undefined} symbol={"Ξ"}/>
+                <Value label={"LPw"} value={lpwLp} token={undefined} symbol={"LP"}/>
+                <Value label={"LPs"}  value={lpsLp} token={undefined} symbol={"LP"}/>
             </div>
             <div className={styles.row}>
-                <Value label={"PHI / ETH"} value={"1"} token={undefined}/>
-                <Value label={"PHIw / ETH"} value={"1"} token={undefined}/>
-                <Value label={"PHIs (USD)"}  value={"1500"} token={undefined}/>
+                <Value label={"PHI"} value={phiETH} token={undefined} symbol={"Ξ"}/>
+                <Value label={"PHIw"} value={phiwETH} token={undefined} symbol={"Ξ"}/>
+                <Value label={"PHIs"}  value={phisETH} token={undefined} symbol={"Ξ"}/>
             </div>
 
         </div>
         <div className={styles.main}>
-            <table id="farmTable">
+            <table id="farmTable" className={styles.styledTable}>
                 <tbody>
-                <tr>
+
+                <tr className={styles.styledTableHeaderRow}>
                     <th>Name</th>
                     <th>APR (%)</th>
                     <th>TVL (ETH)</th>

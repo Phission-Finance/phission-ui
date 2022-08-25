@@ -3,7 +3,11 @@ import {lpSplitContract, phiSplitContract, uniswapRouter, weth, wethSplitContrac
 
 
 export function roundString(value) {
-    return value.match(/^-?\d+(?:\.\d{0,2})?/)[0]
+    return numberWithCommas(value.match(/^-?\d+(?:\.\d{0,2})?/)[0])
+}
+
+function numberWithCommas(x) {
+    return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 //****************************************************

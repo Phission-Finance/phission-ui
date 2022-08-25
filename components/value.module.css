@@ -6,3 +6,9 @@
     justify-content: space-between;
     flex-direction: column;
 }
+
+.label {
+    color: #ffffff;
+    font-size: larger;
+    font-weight: bold;
+}
