@@ -38,10 +38,10 @@ function Countdown({endDate}) {
                         <h3>Time To Merge</h3>
 
                         <div className={styles.clock}>
-                            <Value label={"Days"} value={timeToMerge.days} token={undefined}/>
-                            <Value label={"Hours"} value={timeToMerge.hours} token={undefined}/>
-                            <Value label={"Min"} value={timeToMerge.minutes} token={undefined}/>
-                            <Value label={"Sec"} value={timeToMerge.seconds} token={undefined}/>
+                            <Value label={"Days"} value={timeToMerge.days} token={undefined} updater={undefined}/>
+                            <Value label={"Hours"} value={timeToMerge.hours} token={undefined} updater={undefined}/>
+                            <Value label={"Min"} value={timeToMerge.minutes} token={undefined} updater={undefined}/>
+                            <Value label={"Sec"} value={timeToMerge.seconds} token={undefined} updater={undefined}/>
                         </div>
                     </div> : ""
             }

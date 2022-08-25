@@ -114,7 +114,7 @@ function Farm({tab, farm}) {
                 <Value label={"Staked"} value={amountStaked} token={farm.token} updater={handleCheckStakedBal}/>
                 <Value label={"Rewards"} value={rewardsEarned} token={farm.token} updater={handleCheckRewardsBal}/>
                 <Balance label={farm.token.symbol} token={farm.token} setParentBalance={setBalance}/>
-                <Value label={"APR"} value={apr.toFixed(1).toString() + "%"}/>
+                <Value label={"APR"} value={apr.toFixed(1).toString() + "%"} updater={undefined}/>
             </div>
 
             <div className={styles.buttonContainer}>

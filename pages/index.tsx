@@ -64,19 +64,19 @@ const Home: NextPage = () => {
         </div>
         <div className={styles.main}>
             <div className={styles.row}>
-                <Value label={"TVL"} value={tvl} token={weth} symbol={"Ξ"}/>
-                <Value label={"TVL"}  value={aprCalc.ethToUsd(tvl)} token={weth} symbol={"$"}/>
+                <Value label={"TVL"} value={tvl} token={weth} symbol={"Ξ"} updater={undefined}/>
+                <Value label={"TVL"}  value={aprCalc.ethToUsd(tvl)} token={weth} symbol={"$"} updater={undefined}/>
             </div>
             <div className={styles.row}>
-                <Value label={"WETHw"} value={wethwETH} token={undefined} symbol={"Ξ"}/>
-                <Value label={"WETHs"}  value={wethsETH} token={undefined} symbol={"Ξ"}/>
-                <Value label={"LPw"} value={lpwLp} token={undefined} symbol={"LP"}/>
-                <Value label={"LPs"}  value={lpsLp} token={undefined} symbol={"LP"}/>
+                <Value label={"WETHw"} value={wethwETH} token={undefined} symbol={"Ξ"} updater={undefined}/>
+                <Value label={"WETHs"}  value={wethsETH} token={undefined} symbol={"Ξ"} updater={undefined}/>
+                <Value label={"LPw"} value={lpwLp} token={undefined} symbol={"LP"} updater={undefined}/>
+                <Value label={"LPs"}  value={lpsLp} token={undefined} symbol={"LP"} updater={undefined}/>
             </div>
             <div className={styles.row}>
-                <Value label={"PHI"} value={phiUSD} token={undefined} symbol={"$"}/>
-                <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"}/>
-                <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"}/>
+                <Value label={"PHI"} value={phiUSD} token={undefined} symbol={"$"} updater={undefined}/>
+                <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
+                <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
             </div>
 
         </div>
