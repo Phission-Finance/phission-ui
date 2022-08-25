@@ -1,23 +1,20 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import styles from './navbar.module.css'
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import {tokenDictionary} from "../const/const";
+import Head from "next/head";
+import Link from "next/link";
+import styles from "./navbar.module.css";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { tokenDictionary } from "../const/const";
 import LoadingButton from "./loadingButton";
-import { useAccount } from 'wagmi'
+import { useAccount } from "wagmi";
 import logo from "../assets/logo2.svg";
 import Image from "next/image";
 
-
-
 export default function Navbar() {
-
-    const { isConnected } = useAccount()
+    const { isConnected } = useAccount();
 
     async function addAssetsToWallet() {
         for (const [key, t] of Object.entries(tokenDictionary)) {
             // @ts-ignore
-            addAssetToWallet(t.address, t.symbol, t.decimals)
+            addAssetToWallet(t.address, t.symbol, t.decimals);
         }
     }
 
@@ -25,9 +22,9 @@ export default function Navbar() {
         try {
             if (window.ethereum) {
                 const wasAdded = await window.ethereum.request({
-                    method: 'wallet_watchAsset',
+                    method: "wallet_watchAsset",
                     params: {
-                        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+                        type: "ERC20", // Initially only supports ERC20, but eventually more!
                         options: {
                             address: address, // The address that the token is at.
                             symbol: symbol, // A ticker symbol or shorthand, up to 5 chars.
@@ -37,7 +34,6 @@ export default function Navbar() {
                     },
                 });
             }
-
         } catch (error) {
             console.log(error);
         }
@@ -49,16 +45,16 @@ export default function Navbar() {
                 <title>Phission Finance</title>
             </Head>
             <header className={styles.header}>
-                <div className={styles.logo} >
+                <div className={styles.logo}>
                     <Link href="/">
                         <a>
-                            <Image src={logo} alt={"phission"} layout='fill' objectFit='contain'/>
+                            <Image src={logo} alt={"phission"} layout="fill" objectFit="contain" />
                         </a>
                     </Link>
                 </div>
 
-                {
-                    isConnected ? <div className={styles.menuItems}>
+                {isConnected ? (
+                    <div className={styles.menuItems}>
                         <Link href="/zap">
                             <a className={styles.menuItem}>Zap</a>
                         </Link>
@@ -75,20 +71,33 @@ export default function Navbar() {
                             <a className={styles.menuItem}>Redeem</a>
                         </Link>
 
-                        <Link href="/docs">
-                            <a className={styles.menuItem}>Docs</a>
+                        <Link href="">
+                            <a
+                                className={styles.menuItem}
+                                onClick={async () =>
+                                    window.open("https://phission-finance.gitbook.io/", "_blank", "noopener,noreferrer")
+                                }
+                            >
+                                Docs
+                            </a>
                         </Link>
-                    </div> : ""
-                }
-
+                    </div>
+                ) : (
+                    ""
+                )}
 
                 <div className={styles.walletInfo}>
-                    <LoadingButton text={'Add Tokens'} action={addAssetsToWallet} disabled={false} className={styles.addTokens} width={"100px"} />
+                    <LoadingButton
+                        text={"Add Tokens"}
+                        action={addAssetsToWallet}
+                        disabled={false}
+                        className={styles.addTokens}
+                        width={"100px"}
+                    />
 
-                    <ConnectButton/>
+                    <ConnectButton />
                 </div>
-
             </header>
         </>
-    )
+    );
 }
