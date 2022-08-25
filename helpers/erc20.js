@@ -268,6 +268,82 @@ export async function zapMint(amountIn, callStatic) {
     }
 }
 
+export async function zapStakeLP(amountIn, minAmountOut, future, ethValue, callStatic) {
+    const ethereum = window.ethereum
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = await provider.getSigner();
+
+    const ethContract = new ethers.Contract(
+        zapContract.address,
+        zapContract.abi,
+        signer
+    );
+
+    if (callStatic) {
+        return await ethContract.callStatic.stakeLP(amountIn, minAmountOut, future, {value: ethValue})
+    } else {
+        return await ethContract.stakeLP(amountIn, minAmountOut, future, {value: ethValue})
+    }
+}
+
+export async function zapUnstakeLP(amountIn, minAmountOut, future, callStatic) {
+    const ethereum = window.ethereum
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = await provider.getSigner();
+
+    const ethContract = new ethers.Contract(
+        zapContract.address,
+        zapContract.abi,
+        signer
+    );
+
+    if (callStatic) {
+        return await ethContract.callStatic.unstakeLP(amountIn, minAmountOut, future)
+    } else {
+        return await ethContract.unstakeLP(amountIn, minAmountOut, future)
+    }
+}
+
+export async function zapStakeLP2(amountIn, minAmountOut, ethValue, callStatic) {
+    const ethereum = window.ethereum
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = await provider.getSigner();
+
+    const ethContract = new ethers.Contract(
+        zapContract.address,
+        zapContract.abi,
+        signer
+    );
+
+    if (callStatic) {
+        return await ethContract.callStatic.stakeLP2(amountIn, minAmountOut, {value: ethValue})
+    } else {
+        return await ethContract.stakeLP2(amountIn, minAmountOut, {value: ethValue})
+    }
+}
+
+
+export async function zapUnstakeLP2(amountIn, minAmountOut, callStatic) {
+    const ethereum = window.ethereum
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = await provider.getSigner();
+
+    const ethContract = new ethers.Contract(
+        zapContract.address,
+        zapContract.abi,
+        signer
+    );
+
+    if (callStatic) {
+        return await ethContract.callStatic.unstakeLP2(amountIn, minAmountOut)
+    } else {
+        return await ethContract.unstakeLP2(amountIn, minAmountOut)
+    }
+}
 
 
 

@@ -12,7 +12,7 @@ export default function Input({label, value, onChangeInput, unit, small}) {
         <div className={styles.container}>
                 { label ? <label>{label}</label> : <></>}
 
-                <input className={small ? styles.smallInput:styles.normalInput }  type="number" defaultValue={value} onChange={event => setQuery(event.target.value)} />
+                <input className={small ? styles.smallInput:styles.normalInput }  type="number" value={value} onChange={event => setQuery(event.target.value)} />
                 {unit? <span className={styles.unit}>{unit}</span>:""}
         </div>
     )

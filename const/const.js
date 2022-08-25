@@ -3,10 +3,11 @@ import {
     swapExactETHForTokens,
     swapExactTokensForTokens, wethBurn, wethMint,
     withdraw, zapBuy,
-    zapBuyLP, zapMint, zapSellLP
+    zapBuyLP, zapMint, zapSell, zapSellLP, zapStakeLP, zapStakeLP2, zapUnstakeLP, zapUnstakeLP2
 } from '../helpers/erc20'
 import {BigNumber} from "ethers";
 import aprCalc from "../helpers/apr";
+import zap from "../pages/zap";
 
 export const gray = "#3c3c3d"
 
@@ -220,6 +221,7 @@ export const tokenDictionary = {
 }
 
 export const mintDictionary = {
+    [ETH] :eth,
     [WETH] :weth,
     [LP] :lp,
     [PHI] :phi,
@@ -288,12 +290,21 @@ export const trades = {
             func: async (amt, minAmountOut, callStatic) => { return await zapSellLP(amt, minAmountOut, callStatic)},
             needsApproval: true
         },
-        // [LPs]: {
-        //     contract: lpSplitContract,
-        // },
-        // [LPw]: {
-        //     contract: lpSplitContract,
-        // },
+        [LPs]: {
+            contract: zapContract,
+            func: async (amt, minAmountOut, callStatic) => { return await zapStakeLP(amt, minAmountOut, true, callStatic)},
+            needsApproval: true
+        },
+        [LPw]: {
+            contract: zapContract,
+            func: async (amt, minAmountOut, callStatic) => { return await zapStakeLP(amt, minAmountOut, false, callStatic)},
+            needsApproval: true
+        },
+        [LP2]: {
+            contract: zapContract,
+            func: async (amt, minAmountOut, callStatic) => { return await zapStakeLP2(amt, minAmountOut, 0, callStatic)},
+            needsApproval: true
+        },
     },
     [PHI]: {
         [WETH]: {
@@ -301,12 +312,6 @@ export const trades = {
             func: async (amt, minAmountOut, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, phi.address, weth.address, 1200, callStatic)},
             needsApproval: true
         },
-        // [PHIs]: {
-        //          contract: phiSplitContract,
-        //      },
-        // [PHIw]: {
-        //          contract: phiSplitContract,
-        //      },
     },
     [LPs]: {
         [LPw]: {
@@ -314,6 +319,11 @@ export const trades = {
             func: async (amt, minAmountOut, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, lps.address, lpw.address, 1200, callStatic)},
             needsApproval: true
         },
+        [LP]: {
+             contract: zapContract,
+            func: async (amt, minAmountOut, callStatic) => { return await zapUnstakeLP(amt, minAmountOut, true, callStatic)},
+            needsApproval: true
+         },
     },
     [LPw]: {
         [LPs]: {
@@ -321,6 +331,11 @@ export const trades = {
             func: async (amt, minAmountOut, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, lpw.address, lps.address, 1200, callStatic)},
             needsApproval: true
         },
+        [LP]: {
+                 contract: zapContract,
+                func: async (amt, minAmountOut, callStatic) => { return await zapUnstakeLP(amt, minAmountOut, false, callStatic)},
+                needsApproval: true
+             },
     },
     [PHIs]: {
         [PHIw]: {
@@ -342,6 +357,11 @@ export const trades = {
             func: async (amt, minAmountOut, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, weths.address, wethw.address, 1200, callStatic)},
             needsApproval: true
         },
+        [ETH]: {
+                 contract: zapContract,
+            func: async (amt, minAmountOut, callStatic) => { return await zapSell(amt, minAmountOut, true, callStatic)},
+            needsApproval: true
+             },
     },
     [WETHw]: {
         [WETHs]: {
@@ -349,26 +369,38 @@ export const trades = {
             func: async (amt, minAmountOut, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, wethw.address, weths.address, 1200, callStatic)},
             needsApproval: true
         },
+        [ETH]: {
+                 contract: zapContract,
+    func: async (amt, minAmountOut, callStatic) => { return await zapSell(amt, minAmountOut, false, callStatic)},
+    needsApproval: true
+},
+    },
+    [LP2]: {
+        [LP]: {
+            contract: zapContract,
+            func: async (amt, minAmountOut, callStatic) => { return await zapUnstakeLP2(amt, minAmountOut, callStatic)},
+            needsApproval: true
+        },
     },
 }
 
 
 export const mint = {
-    // [ETH]: {
-    //     tokens: [
-    //         {
-    //             token: weths,
-    //             balance: BigNumber.from(0)
-    //         },
-    //         {
-    //             token: wethw,
-    //             balance: BigNumber.from(0)
-    //         },
-    //     ],
-    //     contract: zapContract,
-    //     mintFunc: async (amt) => { return zapMint(amt)},
-    //     needsApproval: false
-    // },
+    [ETH]: {
+        tokens: [
+            {
+                token: weths,
+                balance: BigNumber.from(0)
+            },
+            {
+                token: wethw,
+                balance: BigNumber.from(0)
+            },
+        ],
+        contract: zapContract,
+        mintFunc: async (amt) => { return zapMint(amt)},
+        needsApproval: false
+    },
     [WETH]: {
         tokens: [
             {
@@ -424,6 +456,7 @@ export const staking = [
     {
         name: "WETH-PHI LP",
         contract: stakingRewardsPHIWETHContract,
+        needsApproval: true,
         token: phiWethLP,
         poolTokenA: weth,
         poolTokenB: phi,
@@ -432,11 +465,11 @@ export const staking = [
         claimFunc: async () => { return await stakingGetReward(stakingRewardsPHIWETHContract)},
         aprFunc: async () => { return await aprCalc.aprOfETHPHI()},
         tvlFunc:  async () => { return await aprCalc.tvlEthPhi()},
-        // tokenOneTVL
     },
     {
         name: "ETHs-ETHw LPw",
         contract: stakingRewardsLPWContract,
+        needsApproval: true,
         token: lpw,
         poolTokenA: weths,
         poolTokenB: wethw,
@@ -449,6 +482,7 @@ export const staking = [
     {
         name: "ETHs-ETHw LPs",
         contract: stakingRewardsLPSContract,
+        needsApproval: true,
         token: lps,
         poolTokenA: weths,
         poolTokenB: wethw,
@@ -461,6 +495,7 @@ export const staking = [
     {
         name: "LPw-LPs LP",
         contract: stakingRewardsLP2Contract,
+        needsApproval: true,
         token: lp2,
         poolTokenA: lps,
         poolTokenB: lpw,

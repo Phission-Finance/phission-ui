@@ -5,34 +5,52 @@
     justify-content: center;
     align-items: center;
     display: flex;
+
 }
 
 .farm {
-    width: 600px;
+    width: 800px;
     justify-content: space-between;
     align-items: center;
     display: flex;
     flex-direction: column;
-    margin: 25px 0;
+    margin: 5px 0;
+    padding: 25px 0;
+    border: 1px solid #3c3c3d;
+    border-radius: 10px;
+
 }
 
 .stats {
     display: flex;
     flex-direction: row;
+    margin-bottom: 15px;
 }
 
 .inputContainer {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    width: auto;
+    width: 600px;
+    margin-bottom: 15px;
 }
 
 .inputContainer label {
-    height: 60px;
-    line-height: 40px;
     color: #1a1e21;
     font-size: larger;
     font-weight: bold;
+}
+
+.input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttonContainer {
+    width: 600px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }

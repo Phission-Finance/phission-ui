@@ -8,6 +8,7 @@ import {BigNumber} from "ethers";
 function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
 
     const [show, setShow] = useState(false);
+    const [allowance, setAllowance] = useState(BigNumber.from(0));
     const [buttonState, setButtonState] = useState({loading: false, text: "Approve"});
 
     useEffect(() => {
@@ -29,10 +30,15 @@ function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
 
     function handleCheckAllowance() {
                 if (spender.needsApproval) {
-                    checkAllowance(tokenIn, spender.contract).then((allowance) => {
-                        console.log("Allowance", tokenIn.symbol, allowance.toString())
+                    checkAllowance(tokenIn, spender.contract).then((val) => {
 
-                        if (!tokenInAmount.isZero() && tokenInAmount.gt(allowance)) {
+                        if (!val.eq(allowance)) {
+                            setAllowance(val)
+                        }
+
+                        console.log("Allowance", tokenIn.symbol, val.toString())
+
+                        if (!tokenInAmount.isZero() && tokenInAmount.gt(val)) {
                             if (!show) {
                                 setShow(true)
                             }
@@ -52,15 +58,18 @@ function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
     }
 
     return (
-        <Button
-            variant="primary"
-            disabled={buttonState.loading}
-            hidden={!show}
-            onClick={!buttonState.loading ? handleApprove : null}
-            className={styles.button}
-        >
-            {buttonState.text}
-        </Button>
+        <div>
+            <Button
+                variant="primary"
+                disabled={buttonState.loading}
+                hidden={!show}
+                onClick={!buttonState.loading ? handleApprove : null}
+                className={styles.button}
+            >
+                {buttonState.text}
+            </Button>
+        </div>
+
     );
 }
 

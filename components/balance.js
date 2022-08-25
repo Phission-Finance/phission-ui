@@ -3,7 +3,7 @@ import {BigNumber, utils} from "ethers";
 import {checkBalance, roundString} from "../helpers/erc20";
 import styles from "./balance.module.css";
 
-export default function Balance({label, token}) {
+export default function Balance({label, token, setParentBalance}) {
 
     const [balance, setBalance] = useState(BigNumber.from(0));
 
@@ -21,6 +21,9 @@ export default function Balance({label, token}) {
     function handleCheckBalance(token) {
         checkBalance(token).then((bal) => {
             setBalance(bal)
+            if (setParentBalance) {
+                setParentBalance(bal)
+            }
         }).catch((err)=>console.log(err))
     }
 

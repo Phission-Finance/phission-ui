@@ -1,11 +1,11 @@
 
 .container {
-    width: 400px;
+    /*width: 400px;*/
     display: flex;
     align-items: center;
     justify-content: center;
     /*background-color: black;*/
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
     /*backdrop-filter: blur(4px);*/
     /*border-radius: 20px;*/
     /*background: rgb(236,240,241);*/
@@ -55,7 +55,7 @@
     height: 40px;
     padding: 0 15px;
     margin-right: 25px;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
 }
 
 /* Chrome, Safari, Edge, Opera */

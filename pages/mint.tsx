@@ -96,7 +96,8 @@ const Mint: NextPage = () => {
 
                     <div className={styles.horizontalContainer}>
                         {mintOptions.tokens.map((op:any, index: number) => (
-                            <Balance key={op.token.symbol} label={op.token.symbol} token={op.token} />
+                            <Balance key={op.token.symbol} label={op.token.symbol} token={op.token}
+                                     setParentBalance={undefined} />
                         ))}
                     </div>
 

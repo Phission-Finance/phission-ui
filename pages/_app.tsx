@@ -44,7 +44,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (LIVE) {
         return (
             <WagmiConfig client={wagmiClient}>
-                <RainbowKitProvider chains={chains}>
+                <RainbowKitProvider showRecentTransactions={true} chains={chains}>
                     <Layout>
                         <Component {...pageProps} />
                     </Layout>
