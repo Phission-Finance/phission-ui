@@ -10,6 +10,11 @@ body {
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+    background-image: url("../assets/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment:fixed;
 }
 
 p, a, h1, h2,h3,h4,h5, button, button::after, input, label, table, tr, td, th {
