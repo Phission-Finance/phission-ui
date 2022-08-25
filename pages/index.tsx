@@ -90,7 +90,7 @@ const Home: NextPage = () => {
                 <tr className={styles.styledTableHeaderRow}>
                     <th>Name</th>
                     <th>APR (%)</th>
-                    <th>TVL (ETH)</th>
+                    <th>TVL (Ξ)</th>
                 </tr>
             {
                 staking.map((farm: any, i: number) => {

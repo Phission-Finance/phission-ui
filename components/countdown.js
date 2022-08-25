@@ -4,12 +4,18 @@ import Value from "./value";
 
 
 function Countdown({endDate}) {
+    const [init, setInit] = useState(false)
     const [timeToMerge, setTimeToMerge] = useState({days: 0, hours: 0, minutes: 0, seconds:0, secondsRemaining: 0, set: false})
 
     useEffect(() => {
         const interval = setInterval(function() { makeTimer( endDate) }, 1000)
         return () => clearInterval(interval);
     }, []);
+
+    if (!init) {
+        makeTimer( endDate)
+        setInit(true)
+    }
 
     function makeTimer(date) {
         let endTime = (Date.parse(date) / 1000);

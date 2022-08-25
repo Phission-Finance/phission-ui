@@ -16,6 +16,7 @@
   align-items: center;
   margin: 25px 0;
     text-align: center;
+    min-height: 190px;
 }
 
 .clock {

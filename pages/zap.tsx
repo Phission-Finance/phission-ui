@@ -180,9 +180,6 @@ const Zap: NextPage = () => {
 
         <main className={styles.main}>
 
-            {assetIn.symbol}
-            {assetOut.symbol}
-
             <SwapInput label={"Asset In"} values={Object.keys(tokenDictionary).sort()}
                        token={assetIn}
                        onChangeInput={handleAssetInValueChange} onChangeAsset={setAssetIn}
