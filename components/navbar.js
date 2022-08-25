@@ -91,7 +91,6 @@ export default function Navbar() {
                         text={"Add Tokens"}
                         action={addAssetsToWallet}
                         disabled={false}
-                        className={styles.addTokens}
                         width={"100px"}
                     />
 

@@ -5,7 +5,9 @@ export default function Input({label, value, onChangeInput, unit, small}) {
 
         const [query, setQuery] = useState("");
         useEffect(() => {
-                onChangeInput(query ? query : "0")
+                if (query) {
+                        onChangeInput(query)
+                }
         }, [query]);
 
         return (

@@ -8,6 +8,7 @@ import {BigNumber, ethers, utils} from "ethers";
 import Balance from "../components/balance";
 import LoadingButton from "../components/loadingButton";
 import ApprovalButton from "../components/approvalButton";
+import {ButtonGroup, ToggleButton} from "react-bootstrap";
 
 type token = {
     symbol: string
@@ -27,6 +28,12 @@ const Mint: NextPage = () => {
     const [burnButtonState, setBurnButtonState] = useState({text: 'Burn', disabled: false})
 
     const [approvalNeeded, setApprovalNeeded] = useState(false)
+
+    const [radioValue, setRadioValue] = useState('Mint');
+    const radios = [
+        { name: 'Mint', value: 'Mint' },
+        { name: 'Burn', value: 'Burn' },
+    ];
 
     useEffect(() => {
         let balanceInterval = setInterval(() => {
@@ -90,6 +97,26 @@ const Mint: NextPage = () => {
     return (
         <div className={styles.container}>
                 <main className={styles.main}>
+                    <div className={styles.buttonGroup}>
+                        <ButtonGroup >
+                            {radios.map((radio, idx) => (
+                                <ToggleButton
+                                    key={idx}
+                                    id={`radio-${idx}`}
+                                    type="radio"
+                                    variant={'outline-primary'}
+                                    name="radio"
+                                    value={radio.value}
+                                    checked={radioValue === radio.value}
+                                    onChange={(e) => setRadioValue(e.currentTarget.value)}
+                                >
+                                    {radio.name}
+                                </ToggleButton>
+                            ))}
+                        </ButtonGroup>
+                    </div>
+
+
                     <SwapInput label={"Asset In"} values={Object.keys(mintDictionary).sort()}
                                onChangeInput={handleAmountInChange} token={mintAsset}
                                onChangeAsset={handleAssetInChange} onChangeBalance={undefined}/>
@@ -101,12 +128,16 @@ const Mint: NextPage = () => {
                         ))}
                     </div>
 
-                    <ApprovalButton tokenIn={mintAsset} spender={mintOptions}
-                                    tokenInAmount={amountIn} setApprovalNeeded={setApprovalNeeded}></ApprovalButton>
+                    { radioValue === "Mint" ?
+                        <ApprovalButton tokenIn={mintAsset} spender={mintOptions}
+                                    tokenInAmount={amountIn} setApprovalNeeded={setApprovalNeeded}></ApprovalButton> : ""
+                    }
 
                     <div className={styles.horizontalContainer}>
-                        <LoadingButton text={mintButtonState.text} action={handleMint} disabled={mintButtonState.disabled} width={undefined}/>
-                        <LoadingButton text={burnButtonState.text} action={handleBurn} disabled={burnButtonState.disabled} width={undefined}/>
+                        { radioValue === "Mint" ?
+                            <LoadingButton text={mintButtonState.text} action={handleMint} disabled={mintButtonState.disabled} width={undefined}/> :
+                            <LoadingButton text={burnButtonState.text} action={handleBurn} disabled={burnButtonState.disabled} width={undefined}/>
+                        }
                     </div>
 
                 </main>

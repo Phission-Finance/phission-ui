@@ -130,3 +130,7 @@
   justify-content: space-around;
   min-width: 250px;
 }
+
+.buttonGroup {
+  margin-bottom: 15px;
+}
