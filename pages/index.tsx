@@ -60,7 +60,7 @@ const Home: NextPage = () => {
     return (
     <div className={styles.container}>
         <div className={styles.main}>
-            <Countdown endDate={expectedMergeDate}/>
+            <Countdown text={"Time To Merge"} endDate={expectedMergeDate}/>
         </div>
         <div className={styles.main}>
             <div className={styles.row}>

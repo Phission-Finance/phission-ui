@@ -11,6 +11,7 @@ import {useEffect} from "react";
 import Value from "./value";
 import Balance from "./balance";
 import {Button, ButtonGroup, ToggleButton} from "react-bootstrap";
+import aprCalc from "../helpers/apr";
 
 
 function Farm({tab, farm}) {
@@ -58,6 +59,14 @@ function Farm({tab, farm}) {
             }
         })
     }
+
+
+    if (!aprCalc.init) {
+        aprCalc.initialize().then(() => {
+            handleCheckAPR()
+        })
+    }
+
 
     function handleCheckStakedBal() {
         checkBalance(farm.contract).then((bal) => {

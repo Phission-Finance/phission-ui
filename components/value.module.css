@@ -5,10 +5,12 @@
     align-items: flex-start;
     justify-content: flex-end;
     flex-direction: column;
+    text-align: center;
 }
 
 .label {
     color: #ffffff;
     font-size: larger;
-    font-weight: bold;
+    font-weight: bolder;
+    width: 100%;
 }

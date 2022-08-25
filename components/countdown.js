@@ -3,7 +3,7 @@ import styles from './countdown.module.css'
 import Value from "./value";
 
 
-function Countdown({endDate}) {
+function Countdown({text, endDate}) {
     const [init, setInit] = useState(false)
     const [timeToMerge, setTimeToMerge] = useState({days: 0, hours: 0, minutes: 0, seconds:0, secondsRemaining: 0, set: false})
 
@@ -35,7 +35,7 @@ function Countdown({endDate}) {
             {
                 timeToMerge.set ?
                     <div>
-                        <h3>Time To Merge</h3>
+                        <h3>{text}</h3>
 
                         <div className={styles.clock}>
                             <Value label={"Days"} value={timeToMerge.days} token={undefined} updater={undefined}/>
