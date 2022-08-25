@@ -6,7 +6,7 @@ import SwapValue from '../components/swapValue'
 import LoadingButton from '../components/loadingButton'
 import ApprovalButton from '../components/approvalButton'
 import {useEffect, useState} from "react";
-import {tokenDictionary, trades, uniswapRouter, weth} from "../const/const";
+import {eth, tokenDictionary, trades, uniswapRouter, weth} from "../const/const";
 import {checkAllowance, checkBalance, approve, roundString} from '../helpers/erc20'
 import {BigNumber, ethers, utils} from 'ethers'
 import {spans} from "next/dist/build/webpack/plugins/profiling-plugin";
@@ -16,8 +16,7 @@ type token = {
     decimals: number,
     address: string,
     abi: string,
-    balance: BigNumber,
-    initialCheck: boolean
+    balance: BigNumber
 }
 
 type trade = {
@@ -30,56 +29,47 @@ type trade = {
 const Zap: NextPage = () => {
 
 
+    const [init, setInit] = useState(false)
+
     const [assetIn, setAssetIn] = useState(tokenDictionary["ETH"])
-    const [assetOut, setAssetOut] = useState(tokenDictionary["WETH"])
     const [assetInAmount, setAssetInAmount] = useState(BigNumber.from(0))
+    const [assetInBalance, setAssetInBalance] = useState(BigNumber.from(0))
+
+    const [assetOut, setAssetOut] = useState(tokenDictionary["WETH"])
     const [assetOutAmount, setAssetOutAmount] = useState(BigNumber.from(0))
-    const [minAmountOut, setMinAmountOut] = useState(BigNumber.from(0))
+
     const [slippage, setSlippage] = useState(BigNumber.from(5))
-    const [selectedTrade, setSelectedTrade] = useState(trades["ETH"]["WETH"])
-    const [buttonState, setButtonState] = useState({text: 'Swap', disabled: true, action: {}})
-    const [dropDownAssets, setDropDownAssets] = useState(Array<trade>)
-    const [showApprovalButton, setShowApprovalButton] = useState(false)
+
+    const [buttonState, setButtonState] = useState({text: 'Swap', disabled: true})
+    const [approvalNeeded, setApprovalNeeded] = useState(false)
+
     const [sufficientLiquidity, setSufficientLiquidity] = useState(true)
 
 
+
     useEffect(() => {
-        if (!assetIn.initialCheck) {
-            handleAssetInChange("ETH")
-        }
-        if (!assetOut.initialCheck) {
-            handleAssetOutChange("WETH", "ETH")
-        }
 
-        // @ts-ignore
-        let trade = trades[assetIn.symbol][assetOut.symbol]
-
-        if (trade) {
-            console.log("setSelectedTrade",trade)
-            setSelectedTrade(trade)
-
-            handleCheckBalance(assetInAmount).then((ok) => {
-
-                if (ok) {
-                    handleCheckAllowance(assetInAmount, assetIn, trade)
-
-                    handleSetAssetOutAmount(assetInAmount, slippage, trade)
-
-                    //Set min Amount out
-                    let minOut = assetOutAmount.mul(BigNumber.from(100).sub(slippage)).div(BigNumber.from(100))
-                    if (!minOut.eq(minAmountOut)) {
-                        setMinAmountOut(minOut)
-                        console.log("minAmountOut", minOut.toString())
-                    }
-                }
-
-                handleSwapButtonState(assetInAmount, minAmountOut, trade, showApprovalButton, ok)
-            })
-
+        if (assetInAmount.lte(assetInBalance)) {
+            handleSetAssetOutAmount()
+            handleSwapButtonState(true)
+        } else {
+            handleSwapButtonState(false)
         }
 
 
-    }, [assetIn, assetInAmount, assetOut, handleAssetInChange, handleCheckAllowance, showApprovalButton])
+
+
+
+                // setButtonState({text: 'Invalid Swap', disabled: true, action: {}})
+
+
+
+
+
+
+
+    }, [assetInAmount,assetInBalance])
+
 
     function handleSetSlippage(val: number) {
         let slip = BigNumber.from(val)
@@ -87,168 +77,127 @@ const Zap: NextPage = () => {
         setSlippage(slip)
     }
 
-    async function handleCheckBalance(amountIn: BigNumber): Promise<boolean> {
-        if (amountIn.gt(assetIn.balance)) {
-            return false
-        }else {
-            return true
-        }
-    }
 
-    function handleAssetInChange(symbol: string) {
-        // @ts-ignore
-        let token = tokenDictionary[symbol]
-        // setTokenIn(token)
-
-        setAssetIn(token)
-
-        // @ts-ignore
-        setDropDownAssets(trades[symbol])
-
-        // @ts-ignore
-        handleAssetOutChange(Object.keys(trades[symbol]).sort()[0], symbol)
-
-        checkBalance(token).then((bal: BigNumber) => {
-            console.log("Balance", symbol, bal.toString())
-
-            // @ts-ignore
-            tokenDictionary[symbol].balance = bal
-            // @ts-ignore
-            tokenDictionary[symbol].initialCheck = true
-
-            // @ts-ignore
-            setAssetIn(tokenDictionary[symbol])
-        })
-    }
-
-    function handleAssetOutChange(outSymbol: string, inSymbol: string) {
-        // @ts-ignore
-        let token = tokenDictionary[outSymbol]
-
-        console.log("handleAssetOutChange", inSymbol, outSymbol)
-
-        setAssetOut(token)
-
-
-        checkBalance(token).then((bal: BigNumber) => {
-            console.log("Balance", outSymbol, bal.toString())
-
-            // @ts-ignore
-            tokenDictionary[outSymbol].balance = bal
-            // @ts-ignore
-            tokenDictionary[outSymbol].initialCheck = true
-
-            // @ts-ignore
-            setAssetOut(tokenDictionary[outSymbol])
-        })
-    }
 
     function handleAssetInValueChange(val: string) {
         console.log("Swap", val, assetIn, assetOut)
 
-        // @ts-ignore
-        let token = tokenDictionary[assetIn.symbol]
-
-        let amountIn = ethers.utils.parseUnits(val, token.decimals)
+        let amountIn = ethers.utils.parseUnits(val, assetIn.decimals)
 
         setAssetInAmount(amountIn)
     }
 
-    function handleSetAssetOutAmount(amount: BigNumber, slippage: BigNumber, trade: trade) {
-        if (!amount.isZero()) {
-            trade.func(amount,BigNumber.from(0), true).then((response: any) => {
-                console.log("Static Call", response)
-                let amountOut: BigNumber
-                if (trade.contract == uniswapRouter) {
-                    amountOut = response[1]
-                } else if (trade.contract == weth) {
-                    amountOut = amount
-                } else {
-                    amountOut = response
-                }
+    function handleSetAssetOutAmount() {
+        // @ts-ignore
+        if (trades[assetIn.symbol]) {
+            // @ts-ignore
+            if (trades[assetIn.symbol][assetOut.symbol]) {
+                if (!assetInAmount.isZero()) {
+                    // @ts-ignore
+                    trades[assetIn.symbol][assetOut.symbol].func(assetInAmount,BigNumber.from(0), true).then((response: any) => {
+                        console.log("Static Call", response)
+                        let amountOut: BigNumber
+                        // @ts-ignore
+                        if (trades[assetIn.symbol][assetOut.symbol].contract == uniswapRouter) {
+                            amountOut = response[1]
+                            // @ts-ignore
+                        } else if (trades[assetIn.symbol][assetOut.symbol].contract == weth) {
+                            amountOut = assetInAmount
+                        } else {
+                            amountOut = response
+                        }
 
-                if (!amountOut.eq(assetOutAmount)) {
-                    setAssetOutAmount(amountOut)
-                }
+                        if (!amountOut.eq(assetOutAmount)) {
+                            setAssetOutAmount(amountOut)
+                        }
 
-                if (!sufficientLiquidity) {
-                    setSufficientLiquidity(true)
-                }
-            }).catch((err: any) => {
-                if (!assetOutAmount.isZero()) {
-                    setAssetOutAmount(BigNumber.from(0))
-                }
+                        if (!sufficientLiquidity) {
+                            setSufficientLiquidity(true)
+                        }
+                    }).catch((err: any) => {
+                        if (!assetOutAmount.isZero()) {
+                            setAssetOutAmount(BigNumber.from(0))
+                        }
 
-                if (sufficientLiquidity) {
-                    setSufficientLiquidity(false)
+                        if (sufficientLiquidity) {
+                            setSufficientLiquidity(false)
+                        }
+                    })
                 }
-            })
+            }
         }
+
+
     }
 
-    function handleSwapButtonState(amount: BigNumber, minAmountOut: BigNumber, trade: trade, approvalButton: boolean, sufficientBalance: boolean) {
-        // @ts-ignore
-        let executeFunction = async () => {
-            console.log("Execute", amount, minAmountOut,false)
-            return await trade.func(amount, minAmountOut,false)
-        }
-
+    function handleSwapButtonState(sufficientBalance: boolean) {
+        console.log("handleSwapButtonState", sufficientBalance, sufficientLiquidity, approvalNeeded)
         if (!sufficientBalance) {
             if (buttonState.text != 'Insufficient Balance') {
-                setButtonState({text: 'Insufficient Balance', disabled: true, action: executeFunction})
+                setButtonState({text: 'Insufficient Balance', disabled: true})
             }
         } else if (!sufficientLiquidity) {
             if (buttonState.text != 'Insufficient Liquidity') {
-                setButtonState({text: 'Insufficient Liquidity', disabled: true, action: executeFunction})
+                setButtonState({text: 'Insufficient Liquidity', disabled: true})
             }
-        } else if (amount.isZero() || approvalButton) {
+        } else if (assetInAmount.isZero() || approvalNeeded) {
             if (!buttonState.disabled || buttonState.text != 'Swap')  {
-                setButtonState({text: 'Swap', disabled: true, action: executeFunction})
+                setButtonState({text: 'Swap', disabled: true})
             }
         } else  {
             if (buttonState.disabled || buttonState.text != 'Swap') {
-                setButtonState({text: 'Swap', disabled: false, action: executeFunction})
+                setButtonState({text: 'Swap', disabled: false})
             }
         }
     }
 
-    function handleCheckAllowance(amount: BigNumber, token: { symbol: any; }, spender: { needsApproval: any; contract: any; }) {
-        if (spender.needsApproval) {
-            checkAllowance(token, spender.contract).then((allowance) => {
-                console.log("Allowance", token.symbol, allowance.toString())
-
-                if (!amount.isZero() && amount.gt(allowance)) {
-                    setShowApprovalButton(true)
-                } else {
-                    setShowApprovalButton(false)
-                }
-            })
-        } else {
-            setShowApprovalButton(false)
+    async function handleExecute() {
+        // @ts-ignore
+        if (trades[assetIn.symbol]) {
+            // @ts-ignore
+            if (trades[assetIn.symbol][assetOut.symbol]) {
+                // @ts-ignore
+                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(100).sub(slippage)).div(BigNumber.from(100)), false)
+            }
         }
     }
 
+    function getTrade() {
+        // @ts-ignore
+        if (trades[assetIn.symbol]) {
+            // @ts-ignore
+            if (trades[assetIn.symbol][assetOut.symbol]) {
+                // @ts-ignore
+                return trades[assetIn.symbol][assetOut.symbol]
+            }
+        }
+        return {}
+    }
 
     return (
     <div className={styles.container}>
+
+
         <main className={styles.main}>
 
-            <SwapInput label={"Asset In"} values={Object.keys(trades).sort()} onChangeInput={handleAssetInValueChange} dropdownValue={assetIn.symbol} onChangeDropdown={handleAssetInChange}/>
-            <h4>In Balance {
-                roundString(utils.formatUnits(assetIn.balance.toString(), assetIn.decimals))
-            }</h4>
+            {assetIn.symbol}
+            {assetOut.symbol}
+
+            <SwapInput label={"Asset In"} values={Object.keys(tokenDictionary).sort()}
+                       token={assetIn}
+                       onChangeInput={handleAssetInValueChange} onChangeAsset={setAssetIn}
+                       onChangeBalance={setAssetInBalance}/>
 
 
-            <SwapValue label={"Asset Out"} token={assetOut} value={assetOutAmount} values={Object.keys(dropDownAssets).sort()} dropdownValue={assetOut.symbol} onChangeDropdown={(out: string) => handleAssetOutChange(out, assetIn.symbol)}/>
-            <h4>Out Balance {
-                roundString(utils.formatUnits(assetOut.balance.toString(), assetOut.decimals))
-            }</h4>
+            <SwapValue label={"Asset Out"} values={Object.keys(tokenDictionary).sort()}
+                       onChangeAsset={setAssetOut} value={assetOutAmount} token={assetOut}/>
+
 
             <Input label={"Slippage"} value={slippage} onChangeInput={handleSetSlippage}></Input>
 
-            <ApprovalButton show={showApprovalButton} token={assetIn} spender={selectedTrade.contract}
-                            amount={assetInAmount}></ApprovalButton>
-            <LoadingButton text={buttonState.text} action={buttonState.action} disabled={buttonState.disabled}
+            <ApprovalButton tokenIn={assetIn} spender={getTrade()}
+                            tokenInAmount={assetInAmount} setApprovalNeeded={setApprovalNeeded}></ApprovalButton>
+            <LoadingButton text={buttonState.text} action={handleExecute} disabled={buttonState.disabled}
                            width={undefined}/>
         </main>
     </div>

@@ -1,107 +1,111 @@
 import type { NextPage } from 'next';
 import styles from '../styles/Home.module.css';
-import {eth, mint, tokenDictionary, trades, weth} from "../const/const";
+import {eth, mint, mintDictionary, tokenDictionary, trades, weth} from "../const/const";
 import SwapInput from "../components/swapInput";
 import {useEffect, useState} from "react";
-import BN from "bn.js";
 import {approve, checkAllowance, checkBalance, roundString, wethMint} from "../helpers/erc20";
 import {BigNumber, ethers, utils} from "ethers";
-import Dropdown from "react-bootstrap/Dropdown";
+import Balance from "../components/balance";
 import LoadingButton from "../components/loadingButton";
+import ApprovalButton from "../components/approvalButton";
 
+type token = {
+    symbol: string
+    decimals: number,
+    address: string,
+    abi: string,
+    balance: BigNumber
+}
 
 const Mint: NextPage = () => {
 
-    const [mintAsset, setMintAsset] = useState({token: weth, balance: BigNumber.from(0), initialCheck: false})
+    const [mintAsset, setMintAsset] = useState( weth)
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
     // @ts-ignore
     const [mintOptions, setMintOptions] = useState(mint[weth.symbol])
-    const [mintButtonState, setMintButtonState] = useState({text: 'Mint', disabled: true, action: {}})
-    const [burnButtonState, setBurnButtonState] = useState({text: 'Burn', disabled: false, action: {}})
+    const [mintButtonState, setMintButtonState] = useState({text: 'Mint', disabled: true})
+    const [burnButtonState, setBurnButtonState] = useState({text: 'Burn', disabled: false})
+
+    const [approvalNeeded, setApprovalNeeded] = useState(false)
 
     useEffect(() => {
-        if (!mintAsset.initialCheck) {
-            handleAssetInChange(weth.symbol)
+        let balanceInterval = setInterval(() => {
+            for (let i = 0; i < mintOptions.tokens.length; i++) {
+                checkBalance(mintOptions.tokens[i].token).then((bal: BigNumber) => {
+                    mintOptions.tokens[i].balance = bal
+                    setMintOptions(mintOptions)
+                })
+            }
+        }, 2000)
+
+        //Clean up can be done like this
+        return () => {
+            clearInterval(balanceInterval);
         }
     })
 
-    function handleAssetInChange(symbol: string) {
+    useEffect(() => {
+        checkApprovalState()
+    })
+
+    function handleAssetInChange(token: token) {
         // @ts-ignore
-        let token = tokenDictionary[symbol]
+        let ops = mint[token.symbol]
 
-        // @ts-ignore
-        let ops = mint[symbol]
-
-        for (let i = 0; i < ops.tokens.length; i++) {
-            checkBalance(ops.tokens[i].token).then((bal: BigNumber) => {
-                console.log("Balance", ops.tokens[i].token.symbol, bal.toString())
-                ops.tokens[i].balance = bal
-            })
-        }
-
+        setMintAsset(token)
         setMintOptions(ops)
-
-        checkBalance(token).then((bal: BigNumber) => {
-            console.log("Balance", symbol, bal.toString())
-            setMintAsset({token: token, balance: bal, initialCheck: true})
-        })
     }
 
     function handleAmountInChange(val: string) {
-        console.log("Mint", val, mintAsset.token.symbol)
+        console.log("Mint", val, mintAsset.symbol)
 
-        let amtIn = ethers.utils.parseUnits(val, mintAsset.token.decimals)
+        let amtIn = ethers.utils.parseUnits(val, mintAsset.decimals)
 
         setAmountIn(amtIn)
-
-        checkApprovalState(amtIn)
     }
 
-    function checkApprovalState(amountIn: BigNumber) {
+    function checkApprovalState() {
+        // setBurnButtonState({text: 'Burn', disabled: false})
 
-        let mintFunction = async () => await mintOptions.mintFunc(amountIn)
-        let burnFunction = async () => await mintOptions.burnFunc(amountIn)
-
-        setBurnButtonState({text: 'Burn', disabled: false, action: burnFunction})
-
-        console.log("checkApprovalState", mintAsset.token.symbol, amountIn.toString())
-        if (amountIn.isZero()) {
-            setMintButtonState({text: 'Mint', disabled: true, action: mintFunction})
-        } else if (!mintOptions.needsApproval) {
-            setMintButtonState({text: 'Mint', disabled: false, action: mintFunction})
+        console.log("checkApprovalState", mintAsset.symbol, amountIn.toString())
+        if (amountIn.isZero() || approvalNeeded) {
+            if (!mintButtonState.disabled) {
+                setMintButtonState({text: 'Mint', disabled: true})
+            }
         } else {
-            checkAllowance(mintAsset.token, mintOptions.contract).then((allowance: BigNumber) => {
-                console.log("Allowance", mintAsset.token.symbol, allowance.toString())
-                if (amountIn.gt(allowance)) {
-                    setMintButtonState({text: 'Approve', disabled: false, action: async () => {
-                            await approve(mintAsset.token, mintOptions.contract.address, amountIn).then(() => {
-                                setMintButtonState({text: 'Mint', disabled: false, action: mintFunction})
-                            })
-                        } })
-                } else  {
-                    setMintButtonState({text: 'Mint', disabled: false, action: mintFunction})
-                }
-            })
+            if (mintButtonState.disabled) {
+                setMintButtonState({text: 'Mint', disabled: false})
+            }
         }
+    }
+
+    async function handleMint() {
+        return await mintOptions.mintFunc(amountIn)
+    }
+
+    async function handleBurn() {
+        return await mintOptions.burnFunc(amountIn)
     }
 
     return (
         <div className={styles.container}>
                 <main className={styles.main}>
-                    <SwapInput label={"Asset In"} values={Object.keys(mint).sort()} onChangeInput={handleAmountInChange} dropdownValue={mintAsset.token.symbol} onChangeDropdown={handleAssetInChange}/>
-                    <h4>Balance {
-                        roundString(utils.formatUnits(mintAsset.balance.toString(), mintAsset.token.decimals))
-                    }</h4>
+                    <SwapInput label={"Asset In"} values={Object.keys(mintDictionary).sort()}
+                               onChangeInput={handleAmountInChange} token={mintAsset}
+                               onChangeAsset={handleAssetInChange} onChangeBalance={undefined}/>
 
                     <div className={styles.horizontalContainer}>
                         {mintOptions.tokens.map((op:any, index: number) => (
-                            <h4 key={op.token.symbol}>{op.token.symbol} Balance: {roundString(utils.formatUnits(op.balance.toString(), op.token.decimals))}</h4>
+                            <Balance key={op.token.symbol} label={op.token.symbol} token={op.token} />
                         ))}
                     </div>
 
+                    <ApprovalButton tokenIn={mintAsset} spender={mintOptions}
+                                    tokenInAmount={amountIn} setApprovalNeeded={setApprovalNeeded}></ApprovalButton>
+
                     <div className={styles.horizontalContainer}>
-                        <LoadingButton text={mintButtonState.text} action={mintButtonState.action} disabled={mintButtonState.disabled} width={undefined}/>
-                        <LoadingButton text={burnButtonState.text} action={burnButtonState.action} disabled={burnButtonState.disabled} width={undefined}/>
+                        <LoadingButton text={mintButtonState.text} action={handleMint} disabled={mintButtonState.disabled} width={undefined}/>
+                        <LoadingButton text={burnButtonState.text} action={handleBurn} disabled={burnButtonState.disabled} width={undefined}/>
                     </div>
 
                 </main>
