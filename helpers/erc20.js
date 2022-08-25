@@ -3,13 +3,19 @@ import {lpSplitContract, phiSplitContract, uniswapRouter, weth, wethSplitContrac
 
 
 export function roundString(value) {
+    let fVal = parseFloat(value)
 
-    let rounded = value.match(/^-?\d+(?:\.\d{0,2})?/)
-    if (rounded) {
-        return numberWithCommas(rounded[0])
+    if (fVal < 1) {
+        return fVal.toPrecision(2)
     } else {
-        return "0"
+        let rounded = value.match(/^-?\d+(?:\.\d{0,2})?/)
+        if (rounded) {
+            return numberWithCommas(rounded[0])
+        } else {
+            return "0"
+        }
     }
+
 
 
 

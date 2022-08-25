@@ -38,7 +38,7 @@ const Zap: NextPage = () => {
     const [assetOut, setAssetOut] = useState(tokenDictionary["WETH"])
     const [assetOutAmount, setAssetOutAmount] = useState(BigNumber.from(0))
 
-    const [slippage, setSlippage] = useState(BigNumber.from(5))
+    const [slippage, setSlippage] = useState(1)
 
     const [buttonState, setButtonState] = useState({text: 'Swap', disabled: true})
     const [approvalNeeded, setApprovalNeeded] = useState(false)
@@ -72,9 +72,8 @@ const Zap: NextPage = () => {
 
 
     function handleSetSlippage(val: number) {
-        let slip = BigNumber.from(val)
-        console.log("Set Slippage", slip.toString())
-        setSlippage(slip)
+        console.log("Set Slippage", val)
+        setSlippage(val)
     }
 
 
@@ -157,7 +156,7 @@ const Zap: NextPage = () => {
             // @ts-ignore
             if (trades[assetIn.symbol][assetOut.symbol]) {
                 // @ts-ignore
-                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(100).sub(slippage)).div(BigNumber.from(100)), false)
+                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(slippage*10))).div(BigNumber.from(1000)), false)
             }
         }
     }
@@ -190,7 +189,7 @@ const Zap: NextPage = () => {
                        onChangeAsset={setAssetOut} value={assetOutAmount} token={assetOut}/>
 
 
-            <Input label={"Slippage"} value={slippage} onChangeInput={handleSetSlippage}></Input>
+            <Input label={"Slippage"} value={slippage} onChangeInput={handleSetSlippage} unit={"%"} small={true}></Input>
 
             <ApprovalButton tokenIn={assetIn} spender={getTrade()}
                             tokenInAmount={assetInAmount} setApprovalNeeded={setApprovalNeeded}></ApprovalButton>

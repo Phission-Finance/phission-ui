@@ -36,17 +36,26 @@ export default function SwapValue({label, value, token, values, onChangeAsset}) 
 
     return (
         <div className={styles.container}>
-            <label>{label}</label>
-            <h4>{roundString(utils.formatUnits(value.toString(), token.decimals))}</h4>
 
-            <DropdownButton id="dropdown-basic-button" title={token.symbol} onSelect={handleChangeDropdown}>
-                {values.map((op, index) => (
-                    // eslint-disable-next-line react/jsx-key
-                    <Dropdown.Item key={op} eventKey={op}>{op}</Dropdown.Item>
-                ))}
-            </DropdownButton>
+            {/*<label>{label}</label>*/}
+            <div>
+                <p className={styles.value}>{roundString(utils.formatUnits(value.toString(), token.decimals))}</p>
+                <h4 className={styles.balance}>Bal: {roundString(utils.formatUnits(balance.toString(), token.decimals))}</h4>
+            </div>
 
-            <h4>Balance {roundString(utils.formatUnits(balance.toString(), token.decimals))}</h4>
+            <div>
+                <DropdownButton className={styles.dropdownButton} id="dropdown-basic-button" title={token.symbol} onSelect={handleChangeDropdown}>
+                    {values.map((op, index) => (
+                        // eslint-disable-next-line react/jsx-key
+                        <Dropdown.Item key={op} eventKey={op}>{op}</Dropdown.Item>
+                    ))}
+                </DropdownButton>
+            </div>
+
+
+
+
+
         </div>
     )
 }

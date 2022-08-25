@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/farm.module.css';
 import {mint, staking} from "../const/const";
 import {roundString} from "../helpers/erc20";
 import aprCalc from "../helpers/apr";

@@ -9,6 +9,7 @@ import {approve, balanceOf, checkAllowance, checkBalance, earned} from "../helpe
 import ApprovalButton from "./approvalButton";
 import {useEffect} from "react";
 import Value from "./value";
+import Balance from "./balance";
 
 
 function Farm({farm}) {
@@ -16,7 +17,6 @@ function Farm({farm}) {
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
     const [amountStaked, setAmountStaked] = useState(BigNumber.from(0))
     const [rewardsEarned, setRewardsEarned] = useState(BigNumber.from(0))
-    const [balanceLP, setBalanceLP] = useState(BigNumber.from(0))
     const [apr, setApr] = useState(0)
 
     const [stakeButtonState, setStakeButtonState] = useState({text: 'Stake', disabled: false, action: stake})
@@ -31,7 +31,6 @@ function Farm({farm}) {
             handleCheckAllowance(amountIn, farm)
             handleCheckStakedBal()
             handleCheckRewardsBal()
-            handleCheckLPBal()
             handleCheckAPR()
         }
     }, [amountIn, farm, handleCheckAllowance, showApprovalButton])
@@ -73,14 +72,6 @@ function Farm({farm}) {
         }).catch((err) => console.log("handleCheckRewardsBal Error", err))
     }
 
-    function handleCheckLPBal() {
-        checkBalance(farm.token).then((bal) => {
-            if (!balanceLP.eq(bal)) {
-                setBalanceLP(bal)
-            }
-        }).catch((err) => console.log("handleCheckLPBal Error", err))
-    }
-
     function handleCheckAllowance(amount, farm) {
         checkAllowance(farm.token, farm.contract).then((allowance) => {
             console.log("Allowance", farm.token.symbol, allowance.toString())
@@ -109,11 +100,15 @@ function Farm({farm}) {
     return (
         <div className={styles.farm}>
 
-            <Input label={farm.token.symbol} onChangeInput={handleChangeInput} value={amountIn} />
-            <div>
-                <Value label={"Amount Staked"} value={amountStaked} token={farm.token}/>
-                <Value label={"Rewards Earned"} value={rewardsEarned} token={farm.token}/>
-                <Value label={"Balance LP"} value={balanceLP} token={farm.token}/>
+            <div className={styles.inputContainer}>
+                <Input  onChangeInput={handleChangeInput} value={amountIn} />
+                <label >{farm.token.symbol}</label>
+            </div>
+
+            <div className={styles.stats}>
+                <Value label={"Staked"} value={amountStaked} token={farm.token}/>
+                <Value label={"Rewards"} value={rewardsEarned} token={farm.token}/>
+                <Balance label={"LP"} token={farm.token}/>
                 <Value label={"APR"} value={apr.toFixed(1).toString() + "%"}/>
             </div>
 

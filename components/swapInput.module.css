@@ -1,6 +1,66 @@
 .container {
     width: 400px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: flex-end;
+    /*background-color: black;*/
+    margin: 15px;
+    /*backdrop-filter: blur(4px);*/
+    /*border-radius: 20px;*/
+    /*background: rgb(236,240,241);*/
 }
+
+.swapInput {
+    border: none;
+    background-color: white;
+    border-radius: 8px;
+    text-align: right;
+    font-size: larger;
+    width: 250px;
+    height: 40px;
+    padding: 0 15px;
+    margin-right: 25px;
+    margin-bottom: 10px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.swapInput::-webkit-outer-spin-button,
+.swapInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.swapInput[type=number] {
+    -moz-appearance: textfield;
+}
+
+.balance {
+    font-size: medium;
+    text-align: right;
+    margin-right: 25px;
+}
+
+.dropdownButton {
+    margin-bottom: 10px;
+}
+
+
+.dropdownButton button {
+    width: 100px;
+}
+.value {
+    border: none;
+    background-color: white;
+    border-radius: 8px;
+    /*border-radius: 4px;*/
+    text-align: right;
+    font-size: larger;
+    width: 250px;
+    height: 40px;
+    padding: 0 15px;
+    margin-right: 25px;
+    margin-bottom: 10px;
+    line-height: 40px;
+}
+

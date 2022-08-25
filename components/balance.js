@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {BigNumber, utils} from "ethers";
 import {checkBalance, roundString} from "../helpers/erc20";
-import styles from "./swapInput.module.css";
+import styles from "./balance.module.css";
 
 export default function Balance({label, token}) {
 
@@ -26,7 +26,8 @@ export default function Balance({label, token}) {
 
     return (
         <div className={styles.container}>
-            <h4>{label} Balance {roundString(utils.formatUnits(balance.toString(), token.decimals))}</h4>
+            <h4>{roundString(utils.formatUnits(balance.toString(), token.decimals))}</h4>
+            <label className={styles.label}>Balance {label}</label>
         </div>
     )
 }

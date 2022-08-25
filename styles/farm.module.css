@@ -1,0 +1,35 @@
+/*.container {*/
+/*  height: 400px;*/
+/*}*/
+
+
+.main {
+  /*background-color: rgba(255, 255, 255, .15);*/
+  backdrop-filter: blur(4px);
+  background: rgb(236,240,241);
+  /*background:*/
+          /*linear-gradient(to bottom, rgba(236,240,241,0.50) 50%, rgba(236,240,241,0) 100%),*/
+          /*linear-gradient(to top,  rgba(236,240,241,0.50) 50%, rgba(236,240,241,0) 100%),*/
+          /*linear-gradient(to right,  rgba(236,240,241,0.50) 50%, rgba(236,240,241,0) 100%),*/
+          /*linear-gradient(to left,  rgba(236,240,241,0.50) 50%, rgba(236,240,241,0) 100%);*/
+
+  /*background: conic-gradient(*/
+  /*        red 90deg 135deg, orange 135deg 225deg , yellow 225deg 315deg,*/
+  /*        green 315deg 90deg);*/
+
+  background: conic-gradient(
+          rgba(236,240,241,0.50),
+          rgba(236,240,241,0.50),
+          rgba(236,240,241,0.50),
+          rgba(236,240,241,0.50)
+  );
+
+  border-radius: 20px;
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+

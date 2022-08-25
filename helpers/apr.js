@@ -564,6 +564,9 @@ class APRCalculator {
         return BigNumber.from(1600).mul(val)
     }
 
+    phiInUSD() {
+        return this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL*1600
+    }
 
     phiInEth() {
         return this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL

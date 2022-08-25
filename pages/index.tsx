@@ -25,9 +25,9 @@ const Home: NextPage = () => {
     const [tvl, setTvl] = useState(BigNumber.from(0))
     const [wethwETH, setWethwETH] = useState("0")
     const [wethsETH, setWethsETH] = useState("0")
-    const [phiETH, setPhiETH] = useState("0")
-    const [phisETH, setPhisETH] = useState("0")
-    const [phiwETH, setPhiwETH] = useState("0")
+    const [phiUSD, setPhiUSD] = useState("0")
+    const [phisPHI, setPhisPHI] = useState("0")
+    const [phiwPHI, setPhiwPHI] = useState("0")
     const [lpsLp, setLpsLp] = useState("0")
     const [lpwLp, setLpwLp] = useState("0")
 
@@ -49,15 +49,12 @@ const Home: NextPage = () => {
         setTvl(aprCalc.tvl())
         setWethwETH(aprCalc.wethwInEth().toFixed(2))
         setWethsETH(aprCalc.wethsInEth().toFixed(2))
-        setPhiETH(aprCalc.phiInEth().toFixed(2))
-        setPhisETH(aprCalc.phisInEth().toFixed(2))
-        setPhiwETH(aprCalc.phiwInEth().toFixed(2))
+        setPhiUSD(aprCalc.phiInUSD().toFixed(2))
+        setPhisPHI(aprCalc.phisInEth().toFixed(2))
+        setPhiwPHI(aprCalc.phiwInEth().toFixed(2))
         setLpsLp(aprCalc.lpsInLp().toFixed(2))
         setLpwLp(aprCalc.lpwInLp().toFixed(2))
     }
-
-
-
 
 
     return (
@@ -77,9 +74,9 @@ const Home: NextPage = () => {
                 <Value label={"LPs"}  value={lpsLp} token={undefined} symbol={"LP"}/>
             </div>
             <div className={styles.row}>
-                <Value label={"PHI"} value={phiETH} token={undefined} symbol={"Ξ"}/>
-                <Value label={"PHIw"} value={phiwETH} token={undefined} symbol={"Ξ"}/>
-                <Value label={"PHIs"}  value={phisETH} token={undefined} symbol={"Ξ"}/>
+                <Value label={"PHI"} value={phiUSD} token={undefined} symbol={"$"}/>
+                <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"}/>
+                <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"}/>
             </div>
 
         </div>

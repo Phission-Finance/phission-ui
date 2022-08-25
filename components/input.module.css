@@ -1,0 +1,71 @@
+
+.container {
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background-color: black;*/
+    margin-bottom: 15px;
+    /*backdrop-filter: blur(4px);*/
+    /*border-radius: 20px;*/
+    /*background: rgb(236,240,241);*/
+}
+
+
+.smallInput {
+    border: none;
+    border-bottom:  1px solid  #3c3c3d;
+    background-color: transparent;
+    /*border-radius: 4px;*/
+    text-align: center;
+    font-size: medium;
+    width: 50px;
+    height: 30px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+
+     /* Chrome, Safari, Edge, Opera */
+.smallInput::-webkit-outer-spin-button,
+.smallInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.smallInput[type=number] {
+    -moz-appearance: textfield;
+}
+
+.unit {
+    height: 30px;
+    line-height: 20px;
+}
+
+
+
+.normalInput {
+    border: none;
+    background-color: white;
+    border-radius: 8px;
+    text-align: right;
+    font-size: larger;
+    width: 250px;
+    height: 40px;
+    padding: 0 15px;
+    margin-right: 25px;
+    margin-bottom: 10px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.normalInput::-webkit-outer-spin-button,
+.normalInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.normalInput[type=number] {
+    -moz-appearance: textfield;
+}
