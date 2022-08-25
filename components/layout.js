@@ -14,10 +14,17 @@ export default function Layout({ children }) {
                     <div>
                         <div className={styles.disclaimer}>
                             <p className={styles.disclaimerText}>
-                                Disclaimer.
+                                Phission is a brand-new, unaudited protocol that relies on novel mechanisms. Please read
+                                the documentation and smart contracts to understand the risks involved.
                                 <br />
-                                This brand-new protocol unlocks yield never seen before in DeFi. Please examine the docs
-                                and understand all the risks before continuing.
+                                <br />
+                                By continuing, you affirm that you are not a United states citizen, resident or entity
+                                and that you have read and agree to the{" "}
+                                <a href="https://phission-finance.gitbook.io/phission/getting-started/phission-finance#terms-of-use">
+                                    Terms of Use
+                                </a>{" "}
+                                outlined in the documentation.
+                                <br />
                                 <br />
                                 Welcome to Phission.Finance but take care, anon.
                             </p>
