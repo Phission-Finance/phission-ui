@@ -44,18 +44,25 @@ const Zap: NextPage = () => {
     const [approvalNeeded, setApprovalNeeded] = useState(false)
 
     const [sufficientLiquidity, setSufficientLiquidity] = useState(true)
+    const [invalidSwap, setInvalidSwap] = useState(false)
 
 
 
     useEffect(() => {
 
+        const jsonTrades = JSON.parse(JSON.stringify(trades))
+        if (!(assetIn.symbol in jsonTrades) || !(assetOut.symbol in jsonTrades[assetIn.symbol])) {
+            setInvalidSwap(true)
+        }else {
+            setInvalidSwap(false)
+            
         if (assetInAmount.lte(assetInBalance)) {
             handleSetAssetOutAmount()
             handleSwapButtonState(true)
         } else {
             handleSwapButtonState(false)
         }
-
+    }
 
 
 
@@ -68,7 +75,7 @@ const Zap: NextPage = () => {
 
 
 
-    }, [assetInAmount,assetInBalance])
+    }, [assetInAmount,assetInBalance, assetIn, assetOut])
 
 
     function handleSetSlippage(val: number) {
@@ -188,6 +195,8 @@ const Zap: NextPage = () => {
             <SwapValue label={"Asset Out"} values={Object.keys(tokenDictionary).sort()}
                        onChangeAsset={setAssetOut} value={assetOutAmount} token={assetOut}/>
 
+
+        {invalidSwap ? <h1>Invalid Zap</h1> : null}
 
             <Input label={"Slippage"} value={slippage} onChangeInput={handleSetSlippage} unit={"%"} small={true}></Input>
 
