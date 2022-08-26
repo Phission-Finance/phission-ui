@@ -73,7 +73,7 @@ class APRCalculator {
     async initialize() {
         this.WETH_ON_SPLIT_CONTRACT = await balanceOf(weth, wethSplitContract.address)
         //ETHPHI Variables
-        this.DAYS_OF_DISTRIBUTION_ETH_PHI = await rewardsDuration(stakingRewardsPHIWETHContract);
+        this.DAYS_OF_DISTRIBUTION_ETH_PHI = await rewardsDuration(stakingRewardsPHIWETHContract).catch((err) => console.error(err));
         this.TOKENS_TO_BE_DISTRIBUTED_ETH_PHI = await getRewardForDuration(stakingRewardsPHIWETHContract);
         this.WETH_IN_GOV_POOL = await balanceOf(weth, WETH_PHI_Pool.address);
         this.PHI_IN_GOV_POOL = await balanceOf(phi, WETH_PHI_Pool.address);

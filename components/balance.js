@@ -7,7 +7,7 @@ import {roundString} from "../helpers/erc20";
 export default function Balance({label, token, setParentBalance}) {
 
     const { address, isConnecting, isDisconnected } = useAccount()
-    const { data, isError, isLoading } = useBalance({
+    const { data: balance, isError, isLoading } = useBalance({
         addressOrName: address,
         token: token.symbol !== "ETH" ? token.address : "",
         watch: true,
@@ -15,9 +15,9 @@ export default function Balance({label, token, setParentBalance}) {
 
     useEffect(() => {
         if (setParentBalance) {
-            setParentBalance(data)
+            setParentBalance(balance)
         }
-    }, [data])
+    }, [balance])
 
     return (
         <div className={styles.container}>
@@ -25,7 +25,7 @@ export default function Balance({label, token, setParentBalance}) {
 
             <h4>{isError}</h4>
             <h4>{isLoading}</h4>
-            <h4>{roundString(data?.formatted)}</h4>
+            <h4>{roundString(balance?.formatted)}</h4>
 
             <label className={styles.label}>Balance {label}</label>
         </div>

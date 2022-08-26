@@ -11,6 +11,9 @@ import {
 import {useAccount, useBalance} from "wagmi";
 import {useEffect, useState} from "react";
 
+// const network = "homestead"
+const network = "ropsten"
+
 
 export function roundString(value) {
     if (value) {
@@ -41,10 +44,10 @@ function numberWithCommas(x) {
 //****************************************************
 
 export async function checkAllowance(contract, address, spender) {
-    const ethereum = window.ethereum
+    // const ethereum = window.ethereum
 
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
+    const provider = new ethers.providers.AlchemyProvider(network);
+    // const signer = await provider.getSigner();
 
     // console.log("checkAllowance", contract, spender)
 
@@ -82,11 +85,7 @@ export async function approve(contract, spender, amount) {
 }
 
 export async function balanceOf(contract, address) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-
-    // console.log("balanceOf",contract, address)
+    const provider = new ethers.providers.AlchemyProvider(network);
 
     const ethContract = new ethers.Contract(
         contract.address,
@@ -530,11 +529,7 @@ export async function stakingGetReward(contract) {
 }
 
 export async function rewardsDuration(contract) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-
-    // console.log("rewardsDuration", contract)
+    const provider = new ethers.providers.AlchemyProvider(network);
 
     const ethContract = new ethers.Contract(
         contract.address,
@@ -546,11 +541,7 @@ export async function rewardsDuration(contract) {
 }
 
 export async function getRewardForDuration(contract) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-
-    // console.log("getRewardForDuration", contract)
+    const provider = new ethers.providers.AlchemyProvider(network);
 
     const ethContract = new ethers.Contract(
         contract.address,
@@ -562,12 +553,7 @@ export async function getRewardForDuration(contract) {
 }
 
 export async function totalSupply(contract) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-
-    // console.log("totalSupply", contract)
-
+    const provider = new ethers.providers.AlchemyProvider(network);
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -582,9 +568,7 @@ export async function totalSupply(contract) {
 //****************************************************
 
 export async function chainlinkLatestAnswer() {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.AlchemyProvider(network);
 
     const ethContract = new ethers.Contract(
         chainlinkEthUsd.address,

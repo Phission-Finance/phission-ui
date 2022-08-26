@@ -11,7 +11,7 @@ import {useAccount, useBalance} from "wagmi";
 export default function SwapValue({label, value, token, values, onChangeAsset}) {
 
     const { address, isConnecting, isDisconnected } = useAccount()
-    const { data, isError, isLoading } = useBalance({
+    const { data: balance, isError, isLoading } = useBalance({
         addressOrName: address,
         token: token.symbol !== "ETH" ? token.address : "",
         watch: true,
@@ -25,7 +25,7 @@ export default function SwapValue({label, value, token, values, onChangeAsset}) 
         <div className={styles.container}>
             <div>
                 <p className={styles.value}>{roundString(utils.formatUnits(value.toString(), token.decimals))}</p>
-                <h4 className={styles.balance}>Bal: {roundString(data?.formatted)}</h4>
+                <h4 className={styles.balance}>Bal: {roundString(balance?.formatted)}</h4>
             </div>
 
             <div>

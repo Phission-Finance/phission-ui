@@ -14,7 +14,7 @@ export default function SwapInput({label, values, token, onChangeInput, onChange
         const [query, setQuery] = useState("");
 
         const { address, isConnecting, isDisconnected } = useAccount()
-        const { data, isError, isLoading } = useBalance({
+        const { data: balance, isError, isLoading } = useBalance({
                 addressOrName: address,
                 token: token.symbol !== "ETH" ? token.address : "",
                 watch: true,
@@ -29,18 +29,18 @@ export default function SwapInput({label, values, token, onChangeInput, onChange
 
         useEffect(() => {
                 if (onChangeBalance) {
-                        onChangeBalance(data?.value)
+                        onChangeBalance(balance?.value)
                 }
-        }, [data])
+        }, [balance])
 
         function handleSetMax() {
                 if (token.symbol === eth.symbol) {
-                        if (data?.value > 50000000000000000) {
-                                let max = data.value - 50000000000000000
+                        if (balance?.value > 50000000000000000) {
+                                let max = balance.value - 50000000000000000
                                 setQuery(utils.formatUnits(max.toString(), token.decimals))
                         }
                 } else {
-                        setQuery(data.formatted)
+                        setQuery(balance.formatted)
                 }
         }
 
@@ -54,7 +54,7 @@ export default function SwapInput({label, values, token, onChangeInput, onChange
         <div className={styles.container}>
                 <div>
                         <input min={0} value={query} className={styles.swapInput} type="number" defaultValue={"0"} onChange={event => setQuery(event.target.value)}/>
-                        <h4 className={styles.balance}>Bal: {roundString(data?.formatted)}</h4>
+                        <h4 className={styles.balance}>Bal: {roundString(balance?.formatted)}</h4>
                 </div>
 
                 <div>

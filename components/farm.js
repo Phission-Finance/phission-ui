@@ -15,7 +15,6 @@ function Farm({tab, farm}) {
 
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
     const [inputValue, setInputValue] = useState("0")
-    const [rewardsEarned, setRewardsEarned] = useState(BigNumber.from(0))
     const [apr, setApr] = useState(0)
     const [balance, setBalance] = useState(BigNumber.from(0));
 
@@ -25,7 +24,7 @@ function Farm({tab, farm}) {
     const [approvalNeeded, setApprovalNeeded] = useState(false)
 
     const { address, isConnecting, isDisconnected } = useAccount()
-    const { data, isError, isLoading } = useContractRead({
+    const { data: staked} = useContractRead({
         addressOrName: farm.contract.address,
         contractInterface: JSON.parse(farm.contract.abi),
         functionName: 'balanceOf',
@@ -33,7 +32,7 @@ function Farm({tab, farm}) {
         watch: true,
     })
 
-    useContractRead({
+    const { data: earned } = useContractRead({
         addressOrName: farm.contract.address,
         contractInterface: JSON.parse(farm.contract.abi),
         functionName: 'earned',
@@ -41,7 +40,6 @@ function Farm({tab, farm}) {
         watch: true,
         onSuccess(data) {
             console.log('Earned Success', data)
-            setRewardsEarned(data)
         },
         onError(error) {
             console.log('Earned Error', error)
@@ -98,7 +96,7 @@ function Farm({tab, farm}) {
     }
 
     function handleSetMaxStaked() {
-        handleChangeInput(utils.formatUnits(data.toString(), farm.token.decimals))
+        handleChangeInput(utils.formatUnits(staked.toString(), farm.token.decimals))
     }
 
     async function openInNewTab(url) {
@@ -120,8 +118,8 @@ function Farm({tab, farm}) {
             </div>
 
             <div className={styles.stats}>
-                <Value label={"Staked"} value={data ? data : BigNumber.from(0)} token={farm.token}/>
-                <Value label={"Rewards"} value={rewardsEarned} token={farm.token} updater={undefined}/>
+                <Value label={"Staked"} value={staked ? staked : BigNumber.from(0)} token={farm.token}/>
+                <Value label={"Rewards"} value={earned} token={farm.token} updater={undefined}/>
                 <Balance label={farm.token.symbol} token={farm.token} setParentBalance={setBalance}/>
                 <Value label={"APR"} value={apr.toFixed(1).toString() + "%"} updater={undefined}/>
             </div>
