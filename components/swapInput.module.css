@@ -13,6 +13,8 @@
 .swapInput {
     border: none;
     background-color: white;
+    border: 1px solid #460884;
+
     border-radius: 8px;
     text-align: right;
     font-size: larger;
@@ -52,6 +54,8 @@
 .value {
     border: none;
     background-color: white;
+    border: 1px solid #460884;
+
     border-radius: 8px;
     /*border-radius: 4px;*/
     text-align: right;
