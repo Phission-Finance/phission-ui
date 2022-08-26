@@ -7,9 +7,10 @@ import LoadingButton from '../components/loadingButton'
 import ApprovalButton from '../components/approvalButton'
 import {useEffect, useState} from "react";
 import {eth, tokenDictionary, trades, uniswapRouter, weth} from "../const/const";
-import {checkAllowance, checkBalance, approve, roundString} from '../helpers/erc20'
+import {checkAllowance, approve, roundString} from '../helpers/erc20'
 import {BigNumber, ethers, utils} from 'ethers'
 import {spans} from "next/dist/build/webpack/plugins/profiling-plugin";
+import {useAccount, useBalance} from "wagmi";
 
 type token = {
     symbol: string
@@ -28,6 +29,7 @@ type trade = {
 
 const Zap: NextPage = () => {
 
+    const { address, isConnecting, isDisconnected } = useAccount()
 
     const [init, setInit] = useState(false)
 
@@ -57,17 +59,6 @@ const Zap: NextPage = () => {
         }
 
 
-
-
-
-                // setButtonState({text: 'Invalid Swap', disabled: true, action: {}})
-
-
-
-
-
-
-
     }, [assetInAmount,assetInBalance])
 
 
@@ -93,7 +84,7 @@ const Zap: NextPage = () => {
             if (trades[assetIn.symbol][assetOut.symbol]) {
                 if (!assetInAmount.isZero()) {
                     // @ts-ignore
-                    trades[assetIn.symbol][assetOut.symbol].func(assetInAmount,BigNumber.from(0), true).then((response: any) => {
+                    trades[assetIn.symbol][assetOut.symbol].func(assetInAmount,BigNumber.from(0), address,true).then((response: any) => {
                         console.log("Static Call", response)
                         let amountOut: BigNumber
                         // @ts-ignore
@@ -156,7 +147,7 @@ const Zap: NextPage = () => {
             // @ts-ignore
             if (trades[assetIn.symbol][assetOut.symbol]) {
                 // @ts-ignore
-                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(slippage*10))).div(BigNumber.from(1000)), false)
+                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(slippage*10))).div(BigNumber.from(1000)), address,false)
             }
         }
     }
@@ -178,7 +169,6 @@ const Zap: NextPage = () => {
 
 
         <main className={styles.main}>
-
             <SwapInput label={"Asset In"} values={Object.keys(tokenDictionary).sort()}
                        token={assetIn}
                        onChangeInput={handleAssetInValueChange} onChangeAsset={setAssetIn}

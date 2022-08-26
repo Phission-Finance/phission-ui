@@ -1,21 +1,32 @@
 import {ethers} from "ethers";
-import {lpSplitContract, phiSplitContract, uniswapRouter, weth, wethSplitContract, zapContract} from "../const/const";
+import {
+    chainlinkEthUsd,
+    lpSplitContract,
+    phiSplitContract,
+    uniswapRouter,
+    weth,
+    wethSplitContract,
+    zapContract
+} from "../const/const";
+import {useAccount, useBalance} from "wagmi";
+import {useEffect, useState} from "react";
 
 
 export function roundString(value) {
-    let fVal = parseFloat(value)
+    if (value) {
+        let fVal = parseFloat(value)
 
-    if (fVal < 1) {
-        return fVal.toPrecision(2)
-    } else {
-        let rounded = value.match(/^-?\d+(?:\.\d{0,2})?/)
-        if (rounded) {
-            return numberWithCommas(rounded[0])
-        } else {
-            return "0"
+        if (fVal < 1) {
+            return fVal.toPrecision(2)
+        } else  {
+            let rounded = value.match(/^-?\d+(?:\.\d{0,2})?/)
+            if (rounded) {
+                return numberWithCommas(rounded[0])
+            }
         }
+    } else {
+        return "0"
     }
-
 
 
 
@@ -29,7 +40,7 @@ function numberWithCommas(x) {
 //**************       ERC20      ********************
 //****************************************************
 
-export async function checkAllowance(contract, spender) {
+export async function checkAllowance(contract, address, spender) {
     const ethereum = window.ethereum
 
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -43,26 +54,7 @@ export async function checkAllowance(contract, spender) {
         provider
     );
 
-    return await ethContract.allowance(signer.getAddress(), spender.address)
-}
-
-export async function checkBalance(contract) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
-    if (contract.symbol === "ETH") {
-        return await signer.getBalance()
-    } else {
-        const ethContract = new ethers.Contract(
-            contract.address,
-            contract.abi,
-            provider
-        );
-
-        return await ethContract.balanceOf(signer.getAddress())
-    }
+    return await ethContract.allowance(address, spender.address)
 }
 
 export async function approve(contract, spender, amount) {
@@ -448,7 +440,7 @@ export async function phiBurn(amountIn) {
 //**************       Uniswap      ******************
 //****************************************************
 
-export async function swapExactTokensForTokens(contract, amountIn, minAmountOut, from, to, deadline, callStatic) {
+export async function swapExactTokensForTokens(contract, amountIn, minAmountOut, from, to, receiver, deadline, callStatic) {
     const ethereum = window.ethereum
 
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -461,14 +453,14 @@ export async function swapExactTokensForTokens(contract, amountIn, minAmountOut,
     );
 
     if (callStatic) {
-        return await ethContract.callStatic.swapExactTokensForTokens(amountIn, minAmountOut, [from, to], signer.getAddress(), Math.floor((Date.now()/1000)) + deadline)
+        return await ethContract.callStatic.swapExactTokensForTokens(amountIn, minAmountOut, [from, to], receiver, Math.floor((Date.now()/1000)) + deadline)
     } else {
-        return await ethContract.swapExactTokensForTokens(amountIn, minAmountOut, [from, to], signer.getAddress(), Math.floor((Date.now()/1000)) + deadline)
+        return await ethContract.swapExactTokensForTokens(amountIn, minAmountOut, [from, to], receiver, Math.floor((Date.now()/1000)) + deadline)
     }
 
 }
 
-export async function swapExactETHForTokens(contract, amountIn, minAmountOut, to, deadline, callStatic) {
+export async function swapExactETHForTokens(contract, amountIn, minAmountOut, to, receiver, deadline, callStatic) {
     const ethereum = window.ethereum
 
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -481,9 +473,9 @@ export async function swapExactETHForTokens(contract, amountIn, minAmountOut, to
     );
 
     if (callStatic) {
-        return await ethContract.callStatic.swapExactETHForTokens(minAmountOut, [weth.address, to], signer.getAddress(), Math.floor((Date.now()/1000)) + deadline, {value: amountIn})
+        return await ethContract.callStatic.swapExactETHForTokens(minAmountOut, [weth.address, to], receiver, Math.floor((Date.now()/1000)) + deadline, {value: amountIn})
     } else {
-        return await ethContract.swapExactETHForTokens(minAmountOut, [weth.address, to], signer.getAddress(), Math.floor((Date.now()/1000)) + deadline, {value: amountIn})
+        return await ethContract.swapExactETHForTokens(minAmountOut, [weth.address, to], receiver, Math.floor((Date.now()/1000)) + deadline, {value: amountIn})
     }
 }
 
@@ -585,45 +577,20 @@ export async function totalSupply(contract) {
     return await ethContract.totalSupply()
 }
 
-
-export async function earned(contract) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
-
-
-    // console.log("earned", contract)
-
-    const ethContract = new ethers.Contract(
-        contract.address,
-        contract.abi,
-        provider
-    );
-
-    return await ethContract.earned(signer.getAddress())
-}
-
-
 //****************************************************
 //**************       Chainlink      ****************
 //****************************************************
 
+export async function chainlinkLatestAnswer() {
+    const ethereum = window.ethereum
 
-// export async function earned(contract) {
-//     const ethereum = window.ethereum
-//
-//     const provider = new ethers.providers.Web3Provider(ethereum);
-//     const signer = await provider.getSigner();
-//
-//     // console.log("earned", contract)
-//
-//     const ethContract = new ethers.Contract(
-//         contract.address,
-//         contract.abi,
-//         provider
-//     );
-//
-//     return await ethContract.earned(signer.getAddress())
-// }
+    const provider = new ethers.providers.Web3Provider(ethereum);
+
+    const ethContract = new ethers.Contract(
+        chainlinkEthUsd.address,
+        chainlinkEthUsd.abi,
+        provider
+    );
+
+    return await ethContract.latestAnswer()
+}

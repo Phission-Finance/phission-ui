@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css';
 import {eth, mint, mintDictionary, tokenDictionary, trades, weth} from "../const/const";
 import SwapInput from "../components/swapInput";
 import {useEffect, useState} from "react";
-import {approve, checkAllowance, checkBalance, roundString, wethMint} from "../helpers/erc20";
+import {approve, checkAllowance, roundString, wethMint} from "../helpers/erc20";
 import {BigNumber, ethers, utils} from "ethers";
 import Balance from "../components/balance";
 import LoadingButton from "../components/loadingButton";
@@ -34,22 +34,6 @@ const Mint: NextPage = () => {
         { name: 'Mint', value: 'Mint' },
         { name: 'Burn', value: 'Burn' },
     ];
-
-    useEffect(() => {
-        let balanceInterval = setInterval(() => {
-            for (let i = 0; i < mintOptions.tokens.length; i++) {
-                checkBalance(mintOptions.tokens[i].token).then((bal: BigNumber) => {
-                    mintOptions.tokens[i].balance = bal
-                    setMintOptions(mintOptions)
-                })
-            }
-        }, 2000)
-
-        //Clean up can be done like this
-        return () => {
-            clearInterval(balanceInterval);
-        }
-    })
 
     useEffect(() => {
         checkApprovalState()

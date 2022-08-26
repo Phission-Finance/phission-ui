@@ -560,13 +560,13 @@ class APRCalculator {
         return this.WETH_ON_SPLIT_CONTRACT.add(this.WETH_IN_GOV_POOL.mul(BigNumber.from(2)))
     }
 
-    ethToUsd(val) {
-        return BigNumber.from(1600).mul(val)
-    }
-
-    phiInUSD() {
-        return this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL*1600
-    }
+    // ethToUsd(val) {
+    //     return BigNumber.from(1600).mul(val)
+    // }
+    //
+    // phiInUSD() {
+    //     return this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL*1600
+    // }
 
     phiInEth() {
         return this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL

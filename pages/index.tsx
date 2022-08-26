@@ -7,7 +7,7 @@ import Countdown from '../components/countdown'
 import FarmRow from '../components/farmRow'
 import {useEffect, useState} from "react";
 import {phi, staking, tokenDictionary, trades, uniswapRouter, weth, weths, wethw} from "../const/const";
-import {checkAllowance, checkBalance, approve, roundString} from '../helpers/erc20'
+import {checkAllowance, approve, roundString, chainlinkLatestAnswer} from '../helpers/erc20'
 import aprCalc from '../helpers/apr'
 import BN from "bn.js";
 import {BigNumber, ethers, utils} from 'ethers'
@@ -15,7 +15,7 @@ import {spans} from "next/dist/build/webpack/plugins/profiling-plugin";
 import Value from "../components/value";
 import Farm from "../components/farm";
 
-const expectedMergeDate = "2022/09/15 03:03:00"
+const expectedMergeDate = "2022-09-15T04:20:00Z"
 
 
 const Home: NextPage = () => {
@@ -25,14 +25,34 @@ const Home: NextPage = () => {
     const [tvl, setTvl] = useState(BigNumber.from(0))
     const [wethwETH, setWethwETH] = useState("0")
     const [wethsETH, setWethsETH] = useState("0")
-    const [phiUSD, setPhiUSD] = useState("0")
+    const [phiETH, setPhiETH] = useState(0)
     const [phisPHI, setPhisPHI] = useState("0")
     const [phiwPHI, setPhiwPHI] = useState("0")
     const [lpsLp, setLpsLp] = useState("0")
     const [lpwLp, setLpwLp] = useState("0")
+    const [ethUsdPrice, setEthUsdPrice] = useState(BigNumber.from(0))
 
+    useEffect(() => {
+        let priceInterval = setInterval(() => {
+            chainlinkLatestAnswer().then((price: BigNumber) => {
+                if (!ethUsdPrice.eq(price)) {
+                    setEthUsdPrice(price.div(1e8))
+                }
+            }).catch((err) => console.error(err))
+        }, 100000)
+
+        //Clean up can be done like this
+        return () => {
+            clearInterval(priceInterval);
+        }
+    })
 
     if (!init) {
+        chainlinkLatestAnswer().then((price: BigNumber) => {
+            if (!ethUsdPrice.eq(price)) {
+                setEthUsdPrice(price.div(1e8))
+            }
+        }).catch((err) => console.error(err))
         if (!aprCalc.init) {
             aprCalc.initialize().then(() => {
                 console.log("APRCalculator initialized", aprCalc)
@@ -49,7 +69,7 @@ const Home: NextPage = () => {
         setTvl(aprCalc.tvl())
         setWethwETH(aprCalc.wethwInEth().toFixed(2))
         setWethsETH(aprCalc.wethsInEth().toFixed(2))
-        setPhiUSD(aprCalc.phiInUSD().toFixed(2))
+        setPhiETH(aprCalc.phiInEth())
         setPhisPHI(aprCalc.phisInEth().toFixed(2))
         setPhiwPHI(aprCalc.phiwInEth().toFixed(2))
         setLpsLp(aprCalc.lpsInLp().toFixed(2))
@@ -65,7 +85,7 @@ const Home: NextPage = () => {
         <div className={styles.main}>
             <div className={styles.row}>
                 <Value label={"TVL"} value={tvl} token={weth} symbol={"Ξ"} updater={undefined}/>
-                <Value label={"TVL"}  value={aprCalc.ethToUsd(tvl)} token={weth} symbol={"$"} updater={undefined}/>
+                <Value label={"TVL"}  value={tvl.mul(ethUsdPrice)} token={weth} symbol={"$"} updater={undefined}/>
             </div>
             <div className={styles.row}>
                 <Value label={"WETHw"} value={wethwETH} token={undefined} symbol={"Ξ"} updater={undefined}/>
@@ -74,7 +94,7 @@ const Home: NextPage = () => {
                 <Value label={"LPs"}  value={lpsLp} token={undefined} symbol={"LP"} updater={undefined}/>
             </div>
             <div className={styles.row}>
-                <Value label={"PHI"} value={phiUSD} token={undefined} symbol={"$"} updater={undefined}/>
+                <Value label={"PHI"} value={phiETH * ethUsdPrice.toNumber()} token={undefined} symbol={"$"} updater={undefined}/>
                 <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
                 <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
             </div>

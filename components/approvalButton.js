@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import styles from './approvalButton.module.css'
-import {approve, checkAllowance, checkBalance} from "../helpers/erc20";
+import {approve, checkAllowance} from "../helpers/erc20";
 import {trades} from "../const/const";
 import {BigNumber} from "ethers";
+import {useAccount} from "wagmi";
 
 function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
+
+    const { address, isConnecting, isDisconnected } = useAccount()
 
     const [show, setShow] = useState(false);
     const [allowance, setAllowance] = useState(BigNumber.from(0));
@@ -30,7 +33,7 @@ function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
 
     function handleCheckAllowance() {
                 if (spender.needsApproval) {
-                    checkAllowance(tokenIn, spender.contract).then((val) => {
+                    checkAllowance(tokenIn, address, spender.contract).then((val) => {
 
                         if (!val.eq(allowance)) {
                             setAllowance(val)

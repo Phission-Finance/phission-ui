@@ -1,24 +1,20 @@
 import styles from './farm.module.css'
-import {eth, mint, trades} from "../const/const";
-
 import LoadingButton from "./loadingButton";
 import Input from "./input";
 import {useState} from "react";
 import {BigNumber, ethers, utils} from "ethers";
-import {approve, balanceOf, checkAllowance, checkBalance, earned} from "../helpers/erc20";
 import ApprovalButton from "./approvalButton";
 import {useEffect} from "react";
 import Value from "./value";
 import Balance from "./balance";
-import {Button, ButtonGroup, ToggleButton} from "react-bootstrap";
 import aprCalc from "../helpers/apr";
+import {useAccount, useContractRead} from "wagmi";
 
 
 function Farm({tab, farm}) {
 
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
     const [inputValue, setInputValue] = useState("0")
-    const [amountStaked, setAmountStaked] = useState(BigNumber.from(0))
     const [rewardsEarned, setRewardsEarned] = useState(BigNumber.from(0))
     const [apr, setApr] = useState(0)
     const [balance, setBalance] = useState(BigNumber.from(0));
@@ -28,13 +24,34 @@ function Farm({tab, farm}) {
     const [claimButtonState, setClaimButtonState] = useState({text: 'Claim', disabled: false, action: claim})
     const [approvalNeeded, setApprovalNeeded] = useState(false)
 
+    const { address, isConnecting, isDisconnected } = useAccount()
+    const { data, isError, isLoading } = useContractRead({
+        addressOrName: farm.contract.address,
+        contractInterface: JSON.parse(farm.contract.abi),
+        functionName: 'balanceOf',
+        args: address,
+        watch: true,
+    })
+
+    useContractRead({
+        addressOrName: farm.contract.address,
+        contractInterface: JSON.parse(farm.contract.abi),
+        functionName: 'earned',
+        args: address,
+        watch: true,
+        onSuccess(data) {
+            console.log('Earned Success', data)
+            setRewardsEarned(data)
+        },
+        onError(error) {
+            console.log('Earned Error', error)
+        },
+    })
+
 
 
     useEffect(() => {
         if (farm.contract) {
-            // handleCheckAllowance(amountIn, farm)
-            handleCheckStakedBal()
-            handleCheckRewardsBal()
             handleCheckAPR()
         }
     }, [amountIn, farm])
@@ -67,23 +84,6 @@ function Farm({tab, farm}) {
         })
     }
 
-
-    function handleCheckStakedBal() {
-        checkBalance(farm.contract).then((bal) => {
-            if (!amountStaked.eq(bal)) {
-                setAmountStaked(bal)
-            }
-        }).catch((err) => console.log("handleCheckStakedBal Error", err))
-    }
-
-    function handleCheckRewardsBal() {
-        earned(farm.contract).then((bal) => {
-            if (!rewardsEarned.eq(bal)) {
-                setRewardsEarned(bal)
-            }
-        }).catch((err) => console.log("handleCheckRewardsBal Error", err))
-    }
-
     function handleChangeInput(val) {
 
         console.log("handleChangeInput", val, farm.token.symbol)
@@ -98,7 +98,7 @@ function Farm({tab, farm}) {
     }
 
     function handleSetMaxStaked() {
-        handleChangeInput(utils.formatUnits(amountStaked.toString(), farm.token.decimals))
+        handleChangeInput(utils.formatUnits(data.toString(), farm.token.decimals))
     }
 
     async function openInNewTab(url) {
@@ -120,8 +120,8 @@ function Farm({tab, farm}) {
             </div>
 
             <div className={styles.stats}>
-                <Value label={"Staked"} value={amountStaked} token={farm.token} updater={handleCheckStakedBal}/>
-                <Value label={"Rewards"} value={rewardsEarned} token={farm.token} updater={handleCheckRewardsBal}/>
+                <Value label={"Staked"} value={data ? data : BigNumber.from(0)} token={farm.token}/>
+                <Value label={"Rewards"} value={rewardsEarned} token={farm.token} updater={undefined}/>
                 <Balance label={farm.token.symbol} token={farm.token} setParentBalance={setBalance}/>
                 <Value label={"APR"} value={apr.toFixed(1).toString() + "%"} updater={undefined}/>
             </div>
