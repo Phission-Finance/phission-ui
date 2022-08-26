@@ -1,5 +1,4 @@
 import Navbar from "./navbar";
-import bg from "../assets/background.jpg";
 import styles from "./layout.module.css";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
