@@ -4,15 +4,36 @@ import styles from './approvalButton.module.css'
 import {approve, checkAllowance} from "../helpers/erc20";
 import {trades} from "../const/const";
 import {BigNumber} from "ethers";
-import {useAccount} from "wagmi";
+import {useAccount, useContractRead, useProvider, useSigner} from "wagmi";
 
 function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
+
+    const provider = useProvider()
+    const { data: signer } = useSigner()
 
     const { address, isConnecting, isDisconnected } = useAccount()
 
     const [show, setShow] = useState(false);
-    const [allowance, setAllowance] = useState(BigNumber.from(0));
+    // const [allowance, setAllowance] = useState(BigNumber.from(0));
     const [buttonState, setButtonState] = useState({loading: false, text: "Approve"});
+
+
+
+    const { data: allowance } = useContractRead({
+        addressOrName: tokenIn.address,
+        contractInterface: tokenIn.abi,
+        functionName: 'allowance',
+        args: [address, spender?.contract.address],
+        watch: true,
+        onSuccess(data) {
+            console.log('Allowance Success', data)
+        },
+        onError(error) {
+            console.log('Allowance Error', error)
+        },
+    })
+
+
 
     useEffect(() => {
         if (spender) {
@@ -22,7 +43,7 @@ function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
 
     async function handleApprove() {
         setButtonState({loading: true, text: "Approving..."})
-        await approve(tokenIn, spender.contract.address, tokenInAmount).then((approved) => {
+        await approve(provider, signer, tokenIn, spender.contract.address, tokenInAmount).then((approved) => {
             setButtonState({loading: false, text: "Approve"})
             if (approved) {
                 setShow(false)
@@ -33,26 +54,19 @@ function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
 
     function handleCheckAllowance() {
                 if (spender.needsApproval) {
-                    checkAllowance(tokenIn, address, spender.contract).then((val) => {
+                    console.log("Allowance", tokenIn.symbol, allowance.toString())
 
-                        if (!val.eq(allowance)) {
-                            setAllowance(val)
+                    if (!tokenInAmount.isZero() && tokenInAmount.gt(allowance)) {
+                        if (!show) {
+                            setShow(true)
                         }
-
-                        console.log("Allowance", tokenIn.symbol, val.toString())
-
-                        if (!tokenInAmount.isZero() && tokenInAmount.gt(val)) {
-                            if (!show) {
-                                setShow(true)
-                            }
-                            setApprovalNeeded(true)
-                        } else {
-                            // setButtonState({loading: false, text: "Approve", hidden: true})
-                            if (show) {
-                                setShow(false)
-                            }
+                        setApprovalNeeded(true)
+                    } else {
+                        // setButtonState({loading: false, text: "Approve", hidden: true})
+                        if (show) {
+                            setShow(false)
                         }
-                    })
+                    }
                 } else {
                     if (show) {
                         setShow(false)

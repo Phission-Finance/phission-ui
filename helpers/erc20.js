@@ -8,12 +8,6 @@ import {
     wethSplitContract,
     zapContract
 } from "../const/const";
-import {useAccount, useBalance} from "wagmi";
-import {useEffect, useState} from "react";
-
-// const network = "homestead"
-const network = "ropsten"
-
 
 export function roundString(value) {
     if (value) {
@@ -30,9 +24,6 @@ export function roundString(value) {
     } else {
         return "0"
     }
-
-
-
 }
 
 function numberWithCommas(x) {
@@ -43,14 +34,7 @@ function numberWithCommas(x) {
 //**************       ERC20      ********************
 //****************************************************
 
-export async function checkAllowance(contract, address, spender) {
-    // const ethereum = window.ethereum
-
-    const provider = new ethers.providers.AlchemyProvider(network);
-    // const signer = await provider.getSigner();
-
-    // console.log("checkAllowance", contract, spender)
-
+export async function checkAllowance(provider, contract, address, spender) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -60,14 +44,7 @@ export async function checkAllowance(contract, address, spender) {
     return await ethContract.allowance(address, spender.address)
 }
 
-export async function approve(contract, spender, amount) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
-    // console.log("approve",contract, spender, amount)
-
+export async function approve(provider, signer, contract, spender, amount) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -84,9 +61,7 @@ export async function approve(contract, spender, amount) {
 
 }
 
-export async function balanceOf(contract, address) {
-    const provider = new ethers.providers.AlchemyProvider(network);
-
+export async function balanceOf(provider, contract, address) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -100,12 +75,7 @@ export async function balanceOf(contract, address) {
 //**************       WETH      *********************
 //****************************************************
 
-export async function deposit(contract, amount, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function deposit(signer, contract, amount, callStatic) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -119,12 +89,7 @@ export async function deposit(contract, amount, callStatic) {
     }
 }
 
-export async function withdraw(contract, amount, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function withdraw(signer, contract, amount, callStatic) {
     let ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -143,12 +108,7 @@ export async function withdraw(contract, amount, callStatic) {
 //***************       ZAP      *********************
 //****************************************************
 
-export async function zapBuy(amountIn, minAmountOut, future, ether, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapBuy(signer, amountIn, minAmountOut, future, ether, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -170,12 +130,7 @@ export async function zapBuy(amountIn, minAmountOut, future, ether, callStatic) 
     }
 }
 
-export async function zapSell(amountIn, minAmountOut, future, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapSell(signer, amountIn, minAmountOut, future, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -190,12 +145,7 @@ export async function zapSell(amountIn, minAmountOut, future, callStatic) {
 
 }
 
-export async function zapBuyLP(amountIn, minAmountOut, ether, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapBuyLP(signer, amountIn, minAmountOut, ether, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -219,12 +169,7 @@ export async function zapBuyLP(amountIn, minAmountOut, ether, callStatic) {
 }
 
 
-export async function zapSellLP(amountIn, minAmountOut, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapSellLP(signer, amountIn, minAmountOut, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -240,12 +185,7 @@ export async function zapSellLP(amountIn, minAmountOut, callStatic) {
 
 }
 
-export async function zapMint(amountIn, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapMint(signer, amountIn, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -259,12 +199,7 @@ export async function zapMint(amountIn, callStatic) {
     }
 }
 
-export async function zapStakeLP(amountIn, minAmountOut, future, ethValue, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapStakeLP(signer, amountIn, minAmountOut, future, ethValue, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -278,12 +213,7 @@ export async function zapStakeLP(amountIn, minAmountOut, future, ethValue, callS
     }
 }
 
-export async function zapUnstakeLP(amountIn, minAmountOut, future, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapUnstakeLP(signer, amountIn, minAmountOut, future, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -297,12 +227,7 @@ export async function zapUnstakeLP(amountIn, minAmountOut, future, callStatic) {
     }
 }
 
-export async function zapStakeLP2(amountIn, minAmountOut, ethValue, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapStakeLP2(signer, amountIn, minAmountOut, ethValue, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -317,12 +242,7 @@ export async function zapStakeLP2(amountIn, minAmountOut, ethValue, callStatic) 
 }
 
 
-export async function zapUnstakeLP2(amountIn, minAmountOut, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function zapUnstakeLP2(signer, amountIn, minAmountOut, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -342,12 +262,7 @@ export async function zapUnstakeLP2(amountIn, minAmountOut, callStatic) {
 //***********       WETH Split      ******************
 //****************************************************
 
-export async function wethMint(amountIn) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function wethMint(signer, amountIn) {
     const ethContract = new ethers.Contract(
         wethSplitContract.address,
         wethSplitContract.abi,
@@ -356,12 +271,7 @@ export async function wethMint(amountIn) {
     return await ethContract.mint(amountIn)
 }
 
-export async function wethBurn(amountIn) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function wethBurn(signer, amountIn) {
     const ethContract = new ethers.Contract(
         wethSplitContract.address,
         wethSplitContract.abi,
@@ -374,12 +284,7 @@ export async function wethBurn(amountIn) {
 //*************       LP Split      ******************
 //****************************************************
 
-export async function lpMint(amountIn) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function lpMint(signer, amountIn) {
     const ethContract = new ethers.Contract(
         lpSplitContract.address,
         lpSplitContract.abi,
@@ -388,12 +293,7 @@ export async function lpMint(amountIn) {
     return await ethContract.mint(amountIn)
 }
 
-export async function lpBurn(amountIn) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function lpBurn(signer, amountIn) {
     const ethContract = new ethers.Contract(
         lpSplitContract.address,
         lpSplitContract.abi,
@@ -406,12 +306,7 @@ export async function lpBurn(amountIn) {
 //*************       PHI Split      *****************
 //****************************************************
 
-export async function phiMint(amountIn) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function phiMint(signer, amountIn) {
     const ethContract = new ethers.Contract(
         phiSplitContract.address,
         phiSplitContract.abi,
@@ -421,12 +316,7 @@ export async function phiMint(amountIn) {
 }
 
 
-export async function phiBurn(amountIn) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
-
+export async function phiBurn(signer, amountIn) {
     const ethContract = new ethers.Contract(
         phiSplitContract.address,
         phiSplitContract.abi,
@@ -439,11 +329,8 @@ export async function phiBurn(amountIn) {
 //**************       Uniswap      ******************
 //****************************************************
 
-export async function swapExactTokensForTokens(contract, amountIn, minAmountOut, from, to, receiver, deadline, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
+export async function swapExactTokensForTokens(signer, contract, amountIn, minAmountOut, from, to, receiver, deadline, callStatic) {
+    
 
     const ethContract = new ethers.Contract(
         uniswapRouter.address,
@@ -459,11 +346,8 @@ export async function swapExactTokensForTokens(contract, amountIn, minAmountOut,
 
 }
 
-export async function swapExactETHForTokens(contract, amountIn, minAmountOut, to, receiver, deadline, callStatic) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
+export async function swapExactETHForTokens(signer, contract, amountIn, minAmountOut, to, receiver, deadline, callStatic) {
+    
 
     const ethContract = new ethers.Contract(
         uniswapRouter.address,
@@ -483,11 +367,8 @@ export async function swapExactETHForTokens(contract, amountIn, minAmountOut, to
 //**************       Staking      ******************
 //****************************************************
 
-export async function stakingStake(contract, amount) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
+export async function stakingStake(signer, contract, amount) {
+    
 
     const ethContract = new ethers.Contract(
         contract.address,
@@ -498,11 +379,8 @@ export async function stakingStake(contract, amount) {
     return await ethContract.stake(amount)
 }
 
-export async function stakingWithdraw(contract, amount) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
+export async function stakingWithdraw(signer, contract, amount) {
+    
 
     const ethContract = new ethers.Contract(
         contract.address,
@@ -513,11 +391,8 @@ export async function stakingWithdraw(contract, amount) {
     return await ethContract.withdraw(amount)
 }
 
-export async function stakingGetReward(contract) {
-    const ethereum = window.ethereum
-
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = await provider.getSigner();
+export async function stakingGetReward(signer, contract) {
+    
 
     const ethContract = new ethers.Contract(
         contract.address,
@@ -528,9 +403,7 @@ export async function stakingGetReward(contract) {
     return await ethContract.getReward()
 }
 
-export async function rewardsDuration(contract) {
-    const provider = new ethers.providers.AlchemyProvider(network);
-
+export async function rewardsDuration(provider, contract) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -540,9 +413,7 @@ export async function rewardsDuration(contract) {
     return await ethContract.rewardsDuration()
 }
 
-export async function getRewardForDuration(contract) {
-    const provider = new ethers.providers.AlchemyProvider(network);
-
+export async function getRewardForDuration(provider,contract) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -552,8 +423,7 @@ export async function getRewardForDuration(contract) {
     return await ethContract.getRewardForDuration()
 }
 
-export async function totalSupply(contract) {
-    const provider = new ethers.providers.AlchemyProvider(network);
+export async function totalSupply(provider,contract) {
     const ethContract = new ethers.Contract(
         contract.address,
         contract.abi,
@@ -567,9 +437,7 @@ export async function totalSupply(contract) {
 //**************       Chainlink      ****************
 //****************************************************
 
-export async function chainlinkLatestAnswer() {
-    const provider = new ethers.providers.AlchemyProvider(network);
-
+export async function chainlinkLatestAnswer(provider) {
     const ethContract = new ethers.Contract(
         chainlinkEthUsd.address,
         chainlinkEthUsd.abi,

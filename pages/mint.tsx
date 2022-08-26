@@ -9,6 +9,7 @@ import Balance from "../components/balance";
 import LoadingButton from "../components/loadingButton";
 import ApprovalButton from "../components/approvalButton";
 import {ButtonGroup, ToggleButton} from "react-bootstrap";
+import {useProvider, useSigner} from "wagmi";
 
 type token = {
     symbol: string
@@ -19,6 +20,8 @@ type token = {
 }
 
 const Mint: NextPage = () => {
+
+    const { data: signer } = useSigner()
 
     const [mintAsset, setMintAsset] = useState( weth)
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
@@ -71,11 +74,11 @@ const Mint: NextPage = () => {
     }
 
     async function handleMint() {
-        return await mintOptions.mintFunc(amountIn)
+        return await mintOptions.mintFunc(signer,amountIn)
     }
 
     async function handleBurn() {
-        return await mintOptions.burnFunc(amountIn)
+        return await mintOptions.burnFunc(signer,amountIn)
     }
 
     return (

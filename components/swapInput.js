@@ -53,7 +53,7 @@ export default function SwapInput({label, values, token, onChangeInput, onChange
         return (
         <div className={styles.container}>
                 <div>
-                        <input min={0} value={query} className={styles.swapInput} type="number" defaultValue={"0"} onChange={event => setQuery(event.target.value)}/>
+                        <input min={0} value={query} className={styles.swapInput} type="number" onChange={event => setQuery(event.target.value)}/>
                         <h4 className={styles.balance}>Bal: {roundString(balance?.formatted)}</h4>
                 </div>
 

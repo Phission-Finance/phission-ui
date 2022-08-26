@@ -6,11 +6,18 @@ import SwapValue from '../components/swapValue'
 import LoadingButton from '../components/loadingButton'
 import ApprovalButton from '../components/approvalButton'
 import {useEffect, useState} from "react";
-import {eth, tokenDictionary, trades, uniswapRouter, weth} from "../const/const";
+import {
+    eth,
+    getTrade,
+    tokenDictionary,
+    trades,
+    uniswapRouter,
+    weth
+} from "../const/const";
 import {checkAllowance, approve, roundString} from '../helpers/erc20'
 import {BigNumber, ethers, utils} from 'ethers'
 import {spans} from "next/dist/build/webpack/plugins/profiling-plugin";
-import {useAccount, useBalance} from "wagmi";
+import {useAccount, useBalance, useContractRead, useProvider, useSigner} from "wagmi";
 
 type token = {
     symbol: string
@@ -29,9 +36,13 @@ type trade = {
 
 const Zap: NextPage = () => {
 
+    const { data: signer } = useSigner()
+
     const { address, isConnecting, isDisconnected } = useAccount()
 
     const [init, setInit] = useState(false)
+
+    const [trade, setTrade] = useState(undefined)
 
     const [assetIn, setAssetIn] = useState(tokenDictionary["ETH"])
     const [assetInAmount, setAssetInAmount] = useState(BigNumber.from(0))
@@ -50,17 +61,39 @@ const Zap: NextPage = () => {
 
 
     useEffect(() => {
-
         if (assetInAmount.lte(assetInBalance)) {
             handleSetAssetOutAmount()
-            handleSwapButtonState(true)
+            handleSwapButtonState(true, trade)
         } else {
-            handleSwapButtonState(false)
+            handleSwapButtonState(false, trade)
         }
+    }, [assetInAmount,assetInBalance, trade])
+
+    useEffect(() => {
+        // @ts-ignore
+        if (trades[assetIn.symbol]) {
+            // @ts-ignore
+            if (trades[assetIn.symbol][assetOut.symbol]) {
+                // @ts-ignore
+                setTrade(trades[assetIn.symbol][assetOut.symbol])
+            } else {
+                setTrade(undefined)
+            }
+        } else  {
+            setTrade(undefined)
+        }
+    }, [assetIn, assetOut])
 
 
-    }, [assetInAmount,assetInBalance])
-
+    // const { data: calculatedAmountOut } = useContractRead({
+    //     addressOrName: getTradeAddress(assetIn, assetOut),
+    //     contractInterface: getTradeAbi(assetIn, assetOut),
+    //     functionName: getTradeFunctionName(assetIn, assetOut),
+    //     args: getTradeArgsFunction(assetIn, assetOut)(assetInAmount, BigNumber.from(0), address),
+    //     overrides: getTradeOverrideFunction(assetIn, assetOut)(assetInAmount, BigNumber.from(0), address),
+    //     watch: true,
+    //     on
+    // })
 
     function handleSetSlippage(val: number) {
         console.log("Set Slippage", val)
@@ -84,7 +117,7 @@ const Zap: NextPage = () => {
             if (trades[assetIn.symbol][assetOut.symbol]) {
                 if (!assetInAmount.isZero()) {
                     // @ts-ignore
-                    trades[assetIn.symbol][assetOut.symbol].func(assetInAmount,BigNumber.from(0), address,true).then((response: any) => {
+                    trades[assetIn.symbol][assetOut.symbol].func(signer,assetInAmount,BigNumber.from(0), address,true).then((response: any) => {
                         console.log("Static Call", response)
                         let amountOut: BigNumber
                         // @ts-ignore
@@ -120,9 +153,11 @@ const Zap: NextPage = () => {
 
     }
 
-    function handleSwapButtonState(sufficientBalance: boolean) {
+    function handleSwapButtonState(sufficientBalance: boolean, trade: trade|undefined) {
         console.log("handleSwapButtonState", sufficientBalance, sufficientLiquidity, approvalNeeded)
-        if (!sufficientBalance) {
+        if (!trade) {
+            setButtonState({text: 'Trade not possible', disabled: true})
+        } else if (!sufficientBalance) {
             if (buttonState.text != 'Insufficient Balance') {
                 setButtonState({text: 'Insufficient Balance', disabled: true})
             }
@@ -147,27 +182,26 @@ const Zap: NextPage = () => {
             // @ts-ignore
             if (trades[assetIn.symbol][assetOut.symbol]) {
                 // @ts-ignore
-                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(slippage*10))).div(BigNumber.from(1000)), address,false)
+                await trades[assetIn.symbol][assetOut.symbol].func(signer,assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(slippage*10))).div(BigNumber.from(1000)), address,false)
             }
         }
     }
 
-    function getTrade() {
-        // @ts-ignore
-        if (trades[assetIn.symbol]) {
-            // @ts-ignore
-            if (trades[assetIn.symbol][assetOut.symbol]) {
-                // @ts-ignore
-                return trades[assetIn.symbol][assetOut.symbol]
-            }
-        }
-        return {}
-    }
+    // function getTrade() {
+    //     // @ts-ignore
+    //     if (trades[assetIn.symbol]) {
+    //         // @ts-ignore
+    //         if (trades[assetIn.symbol][assetOut.symbol]) {
+    //             // @ts-ignore
+    //             return trades[assetIn.symbol][assetOut.symbol]
+    //         }
+    //     }
+    //     return {}
+    // }
+
 
     return (
     <div className={styles.container}>
-
-
         <main className={styles.main}>
             <SwapInput label={"Asset In"} values={Object.keys(tokenDictionary).sort()}
                        token={assetIn}
@@ -181,7 +215,7 @@ const Zap: NextPage = () => {
 
             <Input label={"Slippage"} value={slippage} onChangeInput={handleSetSlippage} unit={"%"} small={true}></Input>
 
-            <ApprovalButton tokenIn={assetIn} spender={getTrade()}
+            <ApprovalButton tokenIn={assetIn} spender={trades[assetIn.symbol][assetOut.symbol]}
                             tokenInAmount={assetInAmount} setApprovalNeeded={setApprovalNeeded}></ApprovalButton>
             <LoadingButton text={buttonState.text} action={handleExecute} disabled={buttonState.disabled}
                            width={undefined}/>

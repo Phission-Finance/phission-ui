@@ -70,40 +70,40 @@ class APRCalculator {
     }
 
 
-    async initialize() {
-        this.WETH_ON_SPLIT_CONTRACT = await balanceOf(weth, wethSplitContract.address)
+    async initialize(provider) {
+        this.WETH_ON_SPLIT_CONTRACT = await balanceOf(provider, weth, wethSplitContract.address)
         //ETHPHI Variables
-        this.DAYS_OF_DISTRIBUTION_ETH_PHI = await rewardsDuration(stakingRewardsPHIWETHContract).catch((err) => console.error(err));
-        this.TOKENS_TO_BE_DISTRIBUTED_ETH_PHI = await getRewardForDuration(stakingRewardsPHIWETHContract);
-        this.WETH_IN_GOV_POOL = await balanceOf(weth, WETH_PHI_Pool.address);
-        this.PHI_IN_GOV_POOL = await balanceOf(phi, WETH_PHI_Pool.address);
-        this.ETH_PHI_LP_STAKED = await balanceOf(phiWethLP, stakingRewardsPHIWETHContract.address);
-        this.ETH_PHI_LP_SUPPLY = await totalSupply(phiWethLP);
+        this.DAYS_OF_DISTRIBUTION_ETH_PHI = await rewardsDuration(provider, stakingRewardsPHIWETHContract).catch((err) => console.error(err));
+        this.TOKENS_TO_BE_DISTRIBUTED_ETH_PHI = await getRewardForDuration(provider, stakingRewardsPHIWETHContract);
+        this.WETH_IN_GOV_POOL = await balanceOf(provider, weth, WETH_PHI_Pool.address);
+        this.PHI_IN_GOV_POOL = await balanceOf(provider, phi, WETH_PHI_Pool.address);
+        this.ETH_PHI_LP_STAKED = await balanceOf(provider, phiWethLP, stakingRewardsPHIWETHContract.address);
+        this.ETH_PHI_LP_SUPPLY = await totalSupply(provider, phiWethLP);
         this.ethphilock.emit('initialized');
         //LPW Variables
-        this.DAYS_OF_DISTRIBUTION_LPw = await rewardsDuration(stakingRewardsLPWContract);
-        this.TOKENS_TO_BE_DISTRIBUTED_LPw = await getRewardForDuration(stakingRewardsLPWContract);
-        this.LPw_STAKED = await balanceOf(lpw, stakingRewardsLPWContract.address);
-        this.LP_SUPPLY = await totalSupply(lp);
-        this.LPw_SUPPLY = await totalSupply(lpw);
-        this.LPw_IN_LP2 = await balanceOf(lpw, LPs_LPw_Pool.address);
-        this.LPs_IN_LP2 = await balanceOf(lps, LPs_LPw_Pool.address);
-        this.ETHw_IN_ETH_POOL = await balanceOf(wethw, WETHs_WETHw_Pool.address);
-        this.ETHs_IN_ETH_POOL = await balanceOf(weths, WETHs_WETHw_Pool.address);
-        this.PHIs_IN_PHI_POOL = await balanceOf(phis, PHIs_PHIw_Pool.address);
-        this.PHIw_IN_PHI_POOL = await balanceOf(phiw, PHIs_PHIw_Pool.address);
+        this.DAYS_OF_DISTRIBUTION_LPw = await rewardsDuration(provider, stakingRewardsLPWContract);
+        this.TOKENS_TO_BE_DISTRIBUTED_LPw = await getRewardForDuration(provider, stakingRewardsLPWContract);
+        this.LPw_STAKED = await balanceOf(provider, lpw, stakingRewardsLPWContract.address);
+        this.LP_SUPPLY = await totalSupply(provider, lp);
+        this.LPw_SUPPLY = await totalSupply(provider, lpw);
+        this.LPw_IN_LP2 = await balanceOf(provider, lpw, LPs_LPw_Pool.address);
+        this.LPs_IN_LP2 = await balanceOf(provider, lps, LPs_LPw_Pool.address);
+        this.ETHw_IN_ETH_POOL = await balanceOf(provider, wethw, WETHs_WETHw_Pool.address);
+        this.ETHs_IN_ETH_POOL = await balanceOf(provider, weths, WETHs_WETHw_Pool.address);
+        this.PHIs_IN_PHI_POOL = await balanceOf(provider, phis, PHIs_PHIw_Pool.address);
+        this.PHIw_IN_PHI_POOL = await balanceOf(provider, phiw, PHIs_PHIw_Pool.address);
         this.lpwlock.emit('initialized');
         //LPS Variables
-        this.DAYS_OF_DISTRIBUTION_LPs = await rewardsDuration(stakingRewardsLPSContract);
-        this.TOKENS_TO_BE_DISTRIBUTED_LPs = await getRewardForDuration(stakingRewardsLPSContract);
-        this.LPs_STAKED = await balanceOf(lps, stakingRewardsLPSContract.address);
-        this.LPs_SUPPLY = await totalSupply(lps);
+        this.DAYS_OF_DISTRIBUTION_LPs = await rewardsDuration(provider, stakingRewardsLPSContract);
+        this.TOKENS_TO_BE_DISTRIBUTED_LPs = await getRewardForDuration(provider, stakingRewardsLPSContract);
+        this.LPs_STAKED = await balanceOf(provider, lps, stakingRewardsLPSContract.address);
+        this.LPs_SUPPLY = await totalSupply(provider, lps);
         this.lpslock.emit('initialized');
         //LP2 Variables
-        this.DAYS_OF_DISTRIBUTION_LP2 = await rewardsDuration(stakingRewardsLP2Contract);
-        this.TOKENS_TO_BE_DISTRIBUTED_LP2 = await getRewardForDuration(stakingRewardsLP2Contract);
-        this.LP2_STAKED = await balanceOf(lp2, stakingRewardsLP2Contract.address);
-        this.LP2_SUPPLY = await totalSupply(lp2);
+        this.DAYS_OF_DISTRIBUTION_LP2 = await rewardsDuration(provider, stakingRewardsLP2Contract);
+        this.TOKENS_TO_BE_DISTRIBUTED_LP2 = await getRewardForDuration(provider, stakingRewardsLP2Contract);
+        this.LP2_STAKED = await balanceOf(provider, lp2, stakingRewardsLP2Contract.address);
+        this.LP2_SUPPLY = await totalSupply(provider, lp2);
         this.lp2lock.emit('initialized');
         this.init = true
     }

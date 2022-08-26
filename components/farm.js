@@ -8,10 +8,12 @@ import {useEffect} from "react";
 import Value from "./value";
 import Balance from "./balance";
 import aprCalc from "../helpers/apr";
-import {useAccount, useContractRead} from "wagmi";
+import {useAccount, useContractRead, useProvider, useSigner} from "wagmi";
 
 
 function Farm({tab, farm}) {
+    const provider = useProvider()
+    const { data: signer } = useSigner()
 
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
     const [inputValue, setInputValue] = useState("0")
@@ -38,12 +40,6 @@ function Farm({tab, farm}) {
         functionName: 'earned',
         args: address,
         watch: true,
-        onSuccess(data) {
-            console.log('Earned Success', data)
-        },
-        onError(error) {
-            console.log('Earned Error', error)
-        },
     })
 
 
@@ -56,15 +52,15 @@ function Farm({tab, farm}) {
 
     async function stake() {
         console.log("stake", amountIn)
-        await farm.stakeFunc(amountIn)
+        await farm.stakeFunc(signer,amountIn)
     }
 
     async function unstake() {
-        await farm.unStakeFunc(amountIn)
+        await farm.unStakeFunc(signer,amountIn)
     }
 
     async function claim() {
-        await farm.claimFunc()
+        await farm.claimFunc(signer)
     }
 
     function handleCheckAPR() {
@@ -77,7 +73,7 @@ function Farm({tab, farm}) {
 
 
     if (!aprCalc.init) {
-        aprCalc.initialize().then(() => {
+        aprCalc.initialize(provider).then(() => {
             handleCheckAPR()
         })
     }

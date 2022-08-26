@@ -394,166 +394,165 @@ export const mintDictionary = {
 }
 
 
+export function getTrade(assetIn, assetOut) {
+    if (trades[assetIn]) {
+        if (trades[assetIn][assetOut]) {
+            return trades[assetIn][assetOut]
+        }
+    }
+    return undefined
+}
 
 export const trades = {
     [ETH]: {
         [WETH]: {
             contract: weth,
-            // func: async (amt, minAmountOut, receiver, callStatic) => { return await deposit(weth,amt, callStatic)},
-            functionName:"deposit",
-            body: (amt, minAmountOut, receiver) => {
-                return {
-                    args: [], overrides: {
-                        value: amt,
-                    }
-                }
-            },
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await deposit(signer, weth,amt, callStatic)},
             needsApproval: false
         },
         [LP]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapBuyLP(amt, minAmountOut, true, callStatic)},
-
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuyLP(signer, amt, minAmountOut, true, callStatic)},
             needsApproval: false
         },
         [PHI]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactETHForTokens(uniswapRouter,amt, minAmountOut, phi.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactETHForTokens(signer, uniswapRouter,amt, minAmountOut, phi.address, receiver, 1200, callStatic)},
             needsApproval: false
         },
         [WETHs]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapBuy(amt, minAmountOut, true, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, true, true, callStatic)},
             needsApproval: false
         },
         [WETHw]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapBuy(amt, minAmountOut, false, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, false, true, callStatic)},
             needsApproval: false
         },
     },
     [WETH]: {
         [ETH]: {
             contract: weth,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await withdraw(weth,amt, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await withdraw(signer, weth,amt, callStatic)},
             needsApproval: false
         },
         [LP]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapBuyLP(amt, minAmountOut, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuyLP(signer, amt, minAmountOut, false, callStatic)},
             needsApproval: true
         },
         [PHI]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, weth.address, phi.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, weth.address, phi.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
         [WETHs]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapBuy(amt, minAmountOut, true, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, true, false, callStatic)},
             needsApproval: true
         },
         [WETHw]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapBuy(amt, minAmountOut, false, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, false, false, callStatic)},
             needsApproval: true
         },
     },
     [LP]: {
         [WETH]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapSellLP(amt, minAmountOut, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSellLP(signer, amt, minAmountOut, callStatic)},
             needsApproval: true
         },
         [LPs]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP(amt, minAmountOut, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP(signer, amt, minAmountOut, true, callStatic)},
             needsApproval: true
         },
         [LPw]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP(amt, minAmountOut, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP(signer, amt, minAmountOut, false, callStatic)},
             needsApproval: true
         },
         [LP2]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP2(amt, minAmountOut, 0, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP2(signer, amt, minAmountOut, 0, callStatic)},
             needsApproval: true
         },
     },
     [PHI]: {
         [WETH]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, phi.address, weth.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, phi.address, weth.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
     },
     [LPs]: {
         [LPw]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, lps.address, lpw.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, lps.address, lpw.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
         [LP]: {
              contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP(amt, minAmountOut, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP(signer, amt, minAmountOut, true, callStatic)},
             needsApproval: true
          },
     },
     [LPw]: {
         [LPs]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, lpw.address, lps.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, lpw.address, lps.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
         [LP]: {
                  contract: zapContract,
-                func: async (amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP(amt, minAmountOut, false, callStatic)},
+                func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP(signer, amt, minAmountOut, false, callStatic)},
                 needsApproval: true
              },
     },
     [PHIs]: {
         [PHIw]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, phis.address, phiw.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, phis.address, phiw.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
     },
     [PHIw]: {
         [PHIs]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, phiw.address, phis.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, phiw.address, phis.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
     },
     [WETHs]: {
         [WETHw]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, weths.address, wethw.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, weths.address, wethw.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
         [ETH]: {
                  contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapSell(amt, minAmountOut, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSell(signer, amt, minAmountOut, true, callStatic)},
             needsApproval: true
              },
     },
     [WETHw]: {
         [WETHs]: {
             contract: uniswapRouter,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(uniswapRouter,amt, minAmountOut, wethw.address, weths.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, wethw.address, weths.address, receiver, 1200, callStatic)},
             needsApproval: true
         },
         [ETH]: {
                  contract: zapContract,
-                    func: async (amt, minAmountOut, receiver, callStatic) => { return await zapSell(amt, minAmountOut, false, callStatic)},
+                    func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSell(signer, amt, minAmountOut, false, callStatic)},
                     needsApproval: true
                 },
     },
     [LP2]: {
         [LP]: {
             contract: zapContract,
-            func: async (amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP2(amt, minAmountOut, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP2(signer, amt, minAmountOut, callStatic)},
             needsApproval: true
         },
     },
@@ -573,7 +572,7 @@ export const mint = {
             },
         ],
         contract: zapContract,
-        mintFunc: async (amt) => { return zapMint(amt)},
+        mintFunc: async (signer, amt) => { return zapMint(signer, amt)},
         needsApproval: false
     },
     [WETH]: {
@@ -588,8 +587,8 @@ export const mint = {
             },
         ],
         contract: wethSplitContract,
-        mintFunc: async (amt) => { return wethMint(amt)},
-        burnFunc: async (amt) => { return wethBurn(amt)},
+        mintFunc: async (signer, amt) => { return wethMint(signer, amt)},
+        burnFunc: async (signer, amt) => { return wethBurn(signer, amt)},
         needsApproval: true
     },
     [LP]: {
@@ -604,8 +603,8 @@ export const mint = {
             },
         ],
         contract: lpSplitContract,
-        mintFunc: async (amt) => { return lpMint(amt)},
-        burnFunc: async (amt) => { return lpBurn(amt)},
+        mintFunc: async (signer, amt) => { return lpMint(signer, amt)},
+        burnFunc: async (signer, amt) => { return lpBurn(signer, amt)},
         needsApproval: true
     },
     [PHI]: {
@@ -620,8 +619,8 @@ export const mint = {
             },
         ],
         contract: phiSplitContract,
-        mintFunc: async (amt) => { return phiMint(amt)},
-        burnFunc: async (amt) => { return phiBurn(amt)},
+        mintFunc: async (signer, amt) => { return phiMint(signer, amt)},
+        burnFunc: async (signer, amt) => { return phiBurn(signer, amt)},
         needsApproval: true
     },
 }
@@ -635,9 +634,9 @@ export const staking = [
         token: phiWethLP,
         poolTokenA: weth,
         poolTokenB: phi,
-        stakeFunc: async (amt) => { return await stakingStake(stakingRewardsPHIWETHContract, amt)},
-        unStakeFunc: async (amt) => { return await stakingWithdraw(stakingRewardsPHIWETHContract, amt)},
-        claimFunc: async () => { return await stakingGetReward(stakingRewardsPHIWETHContract)},
+        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsPHIWETHContract, amt)},
+        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsPHIWETHContract, amt)},
+        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsPHIWETHContract)},
         aprFunc: async () => { return await aprCalc.aprOfETHPHI()},
         tvlFunc:  async () => { return await aprCalc.tvlEthPhi()},
     },
@@ -648,9 +647,9 @@ export const staking = [
         token: lpw,
         poolTokenA: weths,
         poolTokenB: wethw,
-        stakeFunc: async (amt) => { return await stakingStake(stakingRewardsLPWContract, amt)},
-        unStakeFunc: async (amt) => { return await stakingWithdraw(stakingRewardsLPWContract, amt)},
-        claimFunc: async () => { return await stakingGetReward(stakingRewardsLPWContract)},
+        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsLPWContract, amt)},
+        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsLPWContract, amt)},
+        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsLPWContract)},
         aprFunc: async () => { return await aprCalc.aprOfLPw()},
         tvlFunc:  async () => { return await aprCalc.tvlLpw()},
     },
@@ -661,9 +660,9 @@ export const staking = [
         token: lps,
         poolTokenA: weths,
         poolTokenB: wethw,
-        stakeFunc: async (amt) => { return await stakingStake(stakingRewardsLPSContract, amt)},
-        unStakeFunc: async (amt) => { return await stakingWithdraw(stakingRewardsLPSContract, amt)},
-        claimFunc: async () => { return await stakingGetReward(stakingRewardsLPSContract)},
+        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsLPSContract, amt)},
+        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsLPSContract, amt)},
+        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsLPSContract)},
         aprFunc: async () => { return await aprCalc.aprOfLPs()},
         tvlFunc:  async () => { return await aprCalc.tvlLps()},
     },
@@ -674,9 +673,9 @@ export const staking = [
         token: lp2,
         poolTokenA: lps,
         poolTokenB: lpw,
-        stakeFunc: async (amt) => { return await stakingStake(stakingRewardsLP2Contract, amt)},
-        unStakeFunc: async (amt) => { return await stakingWithdraw(stakingRewardsLP2Contract, amt)},
-        claimFunc: async () => { return await stakingGetReward(stakingRewardsLP2Contract)},
+        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsLP2Contract, amt)},
+        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsLP2Contract, amt)},
+        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsLP2Contract)},
         aprFunc: async () => { return await aprCalc.aprOfLP2()},
         tvlFunc:  async () => { return await aprCalc.tvlLp2()},
     }
