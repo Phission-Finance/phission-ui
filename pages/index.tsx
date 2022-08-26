@@ -7,7 +7,7 @@ import Countdown from '../components/countdown'
 import FarmRow from '../components/farmRow'
 import {useEffect, useState} from "react";
 import {phi, staking, tokenDictionary, trades, uniswapRouter, weth, weths, wethw} from "../const/const";
-import {checkAllowance, checkBalance, approve, roundString} from '../helpers/erc20'
+import {checkAllowance, checkBalance, approve, roundString, chainlinkLatestAnswer} from '../helpers/erc20'
 import aprCalc from '../helpers/apr'
 import BN from "bn.js";
 import {BigNumber, ethers, utils} from 'ethers'

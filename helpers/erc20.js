@@ -1,5 +1,13 @@
 import {ethers} from "ethers";
-import {lpSplitContract, phiSplitContract, uniswapRouter, weth, wethSplitContract, zapContract} from "../const/const";
+import {
+    chainlinkEthUsd,
+    lpSplitContract,
+    phiSplitContract,
+    uniswapRouter,
+    weth,
+    wethSplitContract,
+    zapContract
+} from "../const/const";
 
 
 export function roundString(value) {
