@@ -18,7 +18,7 @@ export default function Layout({ children }) {
                                 the documentation and smart contracts to understand the risks involved.
                                 <br />
                                 <br />
-                                By continuing, you affirm that you are not a United states citizen, resident or entity
+                                By continuing, you affirm that you are not a United States citizen, resident or entity
                                 and that you have read and agree to the{" "}
                                 <a href="https://phission-finance.gitbook.io/phission/getting-started/phission-finance#terms-of-use">
                                     Terms of Use

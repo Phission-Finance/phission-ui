@@ -3,7 +3,8 @@ import styles from '../styles/redeem.module.css';
 import Countdown from "../components/countdown";
 
 const Redeem: NextPage = () => {
-    const expectedRedeemDate = "2022/09/15 03:03:00"
+    const expectedRedeemDate = "2022-09-20T00:00:00Z"
+
     return (
         <div className={styles.container}>
                 <div className={styles.main}>

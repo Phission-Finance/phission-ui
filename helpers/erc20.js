@@ -611,19 +611,16 @@ export async function earned(contract) {
 //****************************************************
 
 
-// export async function earned(contract) {
-//     const ethereum = window.ethereum
-//
-//     const provider = new ethers.providers.Web3Provider(ethereum);
-//     const signer = await provider.getSigner();
-//
-//     // console.log("earned", contract)
-//
-//     const ethContract = new ethers.Contract(
-//         contract.address,
-//         contract.abi,
-//         provider
-//     );
-//
-//     return await ethContract.earned(signer.getAddress())
-// }
+export async function chainlinkLatestAnswer() {
+    const ethereum = window.ethereum
+
+    const provider = new ethers.providers.Web3Provider(ethereum);
+
+    const ethContract = new ethers.Contract(
+        chainlinkEthUsd.address,
+        chainlinkEthUsd.abi,
+        provider
+    );
+
+    return await ethContract.latestAnswer()
+}
