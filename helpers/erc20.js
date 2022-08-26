@@ -9,6 +9,8 @@ import {
     zapContract,
 } from "../const/const";
 
+let MAXUINT = ethers.BigNumber.from("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
 export function roundString(value) {
     let fVal = parseFloat(value);
 
@@ -66,12 +68,10 @@ export async function approve(contract, spender, amount) {
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = await provider.getSigner();
 
-    // console.log("approve",contract, spender, amount)
-
     const ethContract = new ethers.Contract(contract.address, contract.abi, signer);
 
     return ethContract
-        .approve(spender, amount.toString())
+        .approve(spender, MAXUINT.toHexString()) // amount.toString())
         .then((tx) => {
             return provider.waitForTransaction(tx.hash).then(() => {
                 return true;
@@ -186,6 +186,7 @@ export async function zapBuyLP(amountIn, minAmountOut, ether, callStatic) {
         }
     } else {
         if (callStatic) {
+            console.log(amountIn, minAmountOut, { value: amountIn });
             return await ethContract.callStatic.buyLP(amountIn, minAmountOut);
         } else {
             return await ethContract.buyLP(amountIn, minAmountOut);
