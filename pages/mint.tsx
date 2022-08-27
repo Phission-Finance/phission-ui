@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import styles from '../styles/Home.module.css';
 import {eth, mint, mintDictionary, tokenDictionary, trades, weth} from "../const/const";
 import SwapInput from "../components/swapInput";
+import BurnInput from "../components/burnInput";
 import {useEffect, useState} from "react";
 import {approve, checkAllowance, roundString, wethMint} from "../helpers/erc20";
 import {BigNumber, ethers, utils} from "ethers";
@@ -27,8 +28,7 @@ const Mint: NextPage = () => {
     const [amountIn, setAmountIn] = useState(BigNumber.from(0))
     // @ts-ignore
     const [mintOptions, setMintOptions] = useState(mint[weth.symbol])
-    const [mintButtonState, setMintButtonState] = useState({text: 'Mint', disabled: true})
-    const [burnButtonState, setBurnButtonState] = useState({text: 'Burn', disabled: false})
+    const [buttonState, setButtonState] = useState({disabled: true})
 
     const [approvalNeeded, setApprovalNeeded] = useState(false)
 
@@ -40,7 +40,11 @@ const Mint: NextPage = () => {
 
     useEffect(() => {
         checkApprovalState()
-    })
+    }, [approvalNeeded, amountIn])
+
+    useEffect(() => {
+
+    }, [radioValue])
 
     function handleAssetInChange(token: token) {
         // @ts-ignore
@@ -63,12 +67,12 @@ const Mint: NextPage = () => {
 
         console.log("checkApprovalState", mintAsset.symbol, amountIn.toString())
         if (amountIn.isZero() || approvalNeeded) {
-            if (!mintButtonState.disabled) {
-                setMintButtonState({text: 'Mint', disabled: true})
+            if (!buttonState.disabled) {
+                setButtonState({disabled: true})
             }
         } else {
-            if (mintButtonState.disabled) {
-                setMintButtonState({text: 'Mint', disabled: false})
+            if (buttonState.disabled) {
+                setButtonState({disabled: false})
             }
         }
     }
@@ -103,17 +107,30 @@ const Mint: NextPage = () => {
                         </ButtonGroup>
                     </div>
 
+                    {radioValue === "Mint" ?
+                        <SwapInput label={"Asset In"}
+                                   values={Object.keys(mintDictionary).sort()}
+                                   onChangeInput={handleAmountInChange} token={mintAsset}
+                                   onChangeAsset={handleAssetInChange} onChangeBalance={undefined}/> :
+                        <BurnInput label={"Asset In"}
+                                   values={Object.keys(mintDictionary).filter((item => !(item === "ETH" && radioValue === "Burn"))).sort()}
+                                   onChangeInput={handleAmountInChange} token={mintAsset}
+                                   onChangeAsset={handleAssetInChange}/>
 
-                    <SwapInput label={"Asset In"} values={Object.keys(mintDictionary).sort()}
-                               onChangeInput={handleAmountInChange} token={mintAsset}
-                               onChangeAsset={handleAssetInChange} onChangeBalance={undefined}/>
+                    }
 
-                    <div className={styles.horizontalContainer}>
-                        {mintOptions.tokens.map((op:any, index: number) => (
-                            <Balance key={op.token.symbol} label={op.token.symbol} token={op.token}
-                                     setParentBalance={undefined} />
-                        ))}
-                    </div>
+                    {radioValue === "Mint" ?
+                        <div className={styles.horizontalContainer}>
+                            {mintOptions.tokens.map((op: any, index: number) => (
+                                <Balance key={op.token.symbol} label={op.token.symbol} token={op.token}
+                                         setParentBalance={undefined}/>
+                            ))}
+                        </div> :
+                        <div className={styles.horizontalContainer}>
+                                <Balance key={mintAsset.symbol} label={mintAsset.symbol} token={mintAsset}
+                                         setParentBalance={undefined}/>
+                        </div>
+                    }
 
                     { radioValue === "Mint" ?
                         <ApprovalButton tokenIn={mintAsset} spender={mintOptions}
@@ -122,8 +139,8 @@ const Mint: NextPage = () => {
 
                     <div className={styles.horizontalContainer}>
                         { radioValue === "Mint" ?
-                            <LoadingButton text={mintButtonState.text} action={handleMint} disabled={mintButtonState.disabled} width={undefined}/> :
-                            <LoadingButton text={burnButtonState.text} action={handleBurn} disabled={burnButtonState.disabled} width={undefined}/>
+                            <LoadingButton text={"Mint"} action={handleMint} disabled={buttonState.disabled} width={undefined}/> :
+                            <LoadingButton text={"Burn"} action={handleBurn} disabled={buttonState.disabled} width={undefined}/>
                         }
                     </div>
 

@@ -53,10 +53,10 @@ function ApprovalButton({tokenIn, tokenInAmount, spender, setApprovalNeeded}) {
     }
 
     function handleCheckAllowance() {
-                if (spender.needsApproval) {
-                    console.log("Allowance", tokenIn.symbol, allowance.toString())
+                if (spender.needsApproval && tokenInAmount) {
+                    console.log("Allowance", tokenIn.symbol, allowance?.toString())
 
-                    if (!tokenInAmount.isZero() && tokenInAmount.gt(allowance)) {
+                    if (!tokenInAmount?.isZero() && tokenInAmount?.gt(allowance ? allowance : BigNumber.from(0))) {
                         if (!show) {
                             setShow(true)
                         }

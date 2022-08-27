@@ -9,6 +9,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import bg from '../assets/background.png'
 import favicon from '../assets/favicon.ico'
 import Layout from '../components/layout'
+import ErrorBoundary from '../components/errorBoundary'
 import {useRouter} from "next/router";
 import {utils} from "ethers";
 import {useState} from "react";
@@ -48,41 +49,22 @@ const wagmiClient = createClient({
 
 
 function MyApp({ Component, pageProps }: AppProps) {
-
-    const [verify, setVerify] = useState(true)
-
-    // const router = useRouter()
-    // if (router.query.secret) {
-    //     let hash = utils.keccak256(utils.toUtf8Bytes(router.query.secret as string))
-    //     if (hash === verifyHash) {
-    //         if (!verify) {
-    //             setVerify(true)
-    //         }
-    //     }
-    // }
-
-    // console.log("query", router.query);
-
-    if (verify) {
         return (
             <WagmiConfig client={wagmiClient}>
                 <RainbowKitProvider showRecentTransactions={true} chains={chains}>
-                    <Head>
-                        <link rel="shortcut icon" href={favicon.src} />
-                        <title>Phission Finance</title>
-                    </Head>
-                    <Layout>
-                        <Component {...pageProps} />
-                    </Layout>
+                    <ErrorBoundary>
+                        <Head>
+                            <link rel="shortcut icon" href={favicon.src} />
+                            <title>Phission Finance</title>
+                        </Head>
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
+                    </ErrorBoundary>
+
                 </RainbowKitProvider>
             </WagmiConfig>
         );
-    } else {
-        return (
-            <div className="placeholder-background" style={{backgroundImage: `url(${bg.src})`,}}></div>
-        )
-    }
-
 }
 
 export default MyApp;

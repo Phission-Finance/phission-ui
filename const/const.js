@@ -394,6 +394,8 @@ export const mintDictionary = {
 }
 
 
+
+
 export function getTrade(assetIn, assetOut) {
     if (trades[assetIn]) {
         if (trades[assetIn][assetOut]) {
@@ -576,6 +578,7 @@ export const mint = {
         needsApproval: false
     },
     [WETH]: {
+        burnName: "WETHs/WETHw",
         tokens: [
             {
                 token: weths,
@@ -592,6 +595,7 @@ export const mint = {
         needsApproval: true
     },
     [LP]: {
+        burnName: "LPs/LPw",
         tokens: [
             {
                 token: lps,
@@ -608,6 +612,7 @@ export const mint = {
         needsApproval: true
     },
     [PHI]: {
+        burnName: "PHIs/PHIw",
         tokens: [
             {
                 token: phis,

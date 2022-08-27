@@ -9,6 +9,7 @@ import Value from "./value";
 import Balance from "./balance";
 import aprCalc from "../helpers/apr";
 import {useAccount, useContractRead, useProvider, useSigner} from "wagmi";
+import {roundString} from "../helpers/erc20";
 
 
 function Farm({tab, farm}) {
@@ -80,19 +81,20 @@ function Farm({tab, farm}) {
 
     function handleChangeInput(val) {
 
+
         console.log("handleChangeInput", val, farm.token.symbol)
 
-        let amtIn = ethers.utils.parseUnits(val, farm.token.decimals)
+        let amtIn = ethers.utils.parseUnits(val ? val : "0", farm.token.decimals)
         setInputValue(val)
         setAmountIn(amtIn)
     }
 
     function handleSetMax() {
-        handleChangeInput(utils.formatUnits(balance.toString(), farm.token.decimals))
+        handleChangeInput(balance?.formatted)
     }
 
     function handleSetMaxStaked() {
-        handleChangeInput(utils.formatUnits(staked.toString(), farm.token.decimals))
+        handleChangeInput(roundString(utils.formatUnits(staked.toString(), farm.token.decimals)))
     }
 
     async function openInNewTab(url) {
@@ -101,7 +103,6 @@ function Farm({tab, farm}) {
 
     return (
         <div className={styles.farm}>
-
             <div className={styles.inputContainer}>
                 <label  className={styles.farmName}>{farm.token.symbol}</label>
                 <div className={styles.input}>
