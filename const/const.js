@@ -1,13 +1,29 @@
 import {
-    deposit, lpBurn, lpMint, phiBurn, phiMint, stakingGetReward, stakingStake, stakingWithdraw,
+    deposit,
+    lpBurn,
+    lpMint,
+    phiBurn,
+    phiMint,
+    stakingGetReward,
+    stakingStake,
+    stakingWithdraw,
     swapExactETHForTokens,
-    swapExactTokensForTokens, wethBurn, wethMint,
-    withdraw, zapBuy,
-    zapBuyLP, zapMint, zapSell, zapSellLP, zapStakeLP, zapStakeLP2, zapUnstakeLP, zapUnstakeLP2
+    swapExactTokensForTokens,
+    wethBurn,
+    wethMint,
+    withdraw,
+    zapBuy,
+    zapBuyLP,
+    zapMint,
+    zapSell,
+    zapSellLP,
+    zapStakeLP,
+    zapStakeLP2,
+    zapUnstakeLP,
+    zapUnstakeLP2
 } from '../helpers/erc20'
 import {BigNumber} from "ethers";
 import aprCalc from "../helpers/apr";
-import zap from "../pages/zap";
 
 export const gray = "#3c3c3d"
 
@@ -28,7 +44,7 @@ const PHIWETHLP = "PHIWETHLP"
 // **************************
 // MAINNET
 // **************************
-export  const chainlinkEthUsd = {
+export const chainlinkEthUsd = {
     address: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
     abi: '[{"inputs":[{"internalType":"address","name":"_aggregator","type":"address"},{"internalType":"address","name":"_accessController","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"int256","name":"current","type":"int256"},{"indexed":true,"internalType":"uint256","name":"roundId","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"updatedAt","type":"uint256"}],"name":"AnswerUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"roundId","type":"uint256"},{"indexed":true,"internalType":"address","name":"startedBy","type":"address"},{"indexed":false,"internalType":"uint256","name":"startedAt","type":"uint256"}],"name":"NewRound","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"OwnershipTransferRequested","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"acceptOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"accessController","outputs":[{"internalType":"contract AccessControllerInterface","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"aggregator","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_aggregator","type":"address"}],"name":"confirmAggregator","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"description","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_roundId","type":"uint256"}],"name":"getAnswer","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint80","name":"_roundId","type":"uint80"}],"name":"getRoundData","outputs":[{"internalType":"uint80","name":"roundId","type":"uint80"},{"internalType":"int256","name":"answer","type":"int256"},{"internalType":"uint256","name":"startedAt","type":"uint256"},{"internalType":"uint256","name":"updatedAt","type":"uint256"},{"internalType":"uint80","name":"answeredInRound","type":"uint80"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_roundId","type":"uint256"}],"name":"getTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"latestAnswer","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"latestRound","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"latestRoundData","outputs":[{"internalType":"uint80","name":"roundId","type":"uint80"},{"internalType":"int256","name":"answer","type":"int256"},{"internalType":"uint256","name":"startedAt","type":"uint256"},{"internalType":"uint256","name":"updatedAt","type":"uint256"},{"internalType":"uint80","name":"answeredInRound","type":"uint80"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"latestTimestamp","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address payable","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint16","name":"","type":"uint16"}],"name":"phaseAggregators","outputs":[{"internalType":"contract AggregatorV2V3Interface","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"phaseId","outputs":[{"internalType":"uint16","name":"","type":"uint16"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_aggregator","type":"address"}],"name":"proposeAggregator","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"proposedAggregator","outputs":[{"internalType":"contract AggregatorV2V3Interface","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint80","name":"_roundId","type":"uint80"}],"name":"proposedGetRoundData","outputs":[{"internalType":"uint80","name":"roundId","type":"uint80"},{"internalType":"int256","name":"answer","type":"int256"},{"internalType":"uint256","name":"startedAt","type":"uint256"},{"internalType":"uint256","name":"updatedAt","type":"uint256"},{"internalType":"uint80","name":"answeredInRound","type":"uint80"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"proposedLatestRoundData","outputs":[{"internalType":"uint80","name":"roundId","type":"uint80"},{"internalType":"int256","name":"answer","type":"int256"},{"internalType":"uint256","name":"startedAt","type":"uint256"},{"internalType":"uint256","name":"updatedAt","type":"uint256"},{"internalType":"uint80","name":"answeredInRound","type":"uint80"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_accessController","type":"address"}],"name":"setController","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"version","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]'
 }
@@ -98,8 +114,6 @@ export const WETH_PHI_Pool = {
     address: "0x18174E80335B9fCbc8ac0AB7f40F25aba878ccCC",
     abi: '[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount0Out","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1Out","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Swap","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint112","name":"reserve0","type":"uint112"},{"indexed":false,"internalType":"uint112","name":"reserve1","type":"uint112"}],"name":"Sync","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"MINIMUM_LIQUIDITY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"burn","outputs":[{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_token0","type":"address"},{"internalType":"address","name":"_token1","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"price0CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"price1CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"skim","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount0Out","type":"uint256"},{"internalType":"uint256","name":"amount1Out","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"swap","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"sync","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"token0","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"token1","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]'
 }
-
-
 
 
 export const eth = {
@@ -191,11 +205,6 @@ export const phiWethLP = {
     abi: '[{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount0Out","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1Out","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Swap","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint112","name":"reserve0","type":"uint112"},{"indexed":false,"internalType":"uint112","name":"reserve1","type":"uint112"}],"name":"Sync","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"MINIMUM_LIQUIDITY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"burn","outputs":[{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_token0","type":"address"},{"internalType":"address","name":"_token1","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"price0CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"price1CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"skim","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount0Out","type":"uint256"},{"internalType":"uint256","name":"amount1Out","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"swap","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"sync","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"token0","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"token1","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}]',
     balance: BigNumber.from(0)
 }
-
-
-
-
-
 
 
 //**************************
@@ -364,36 +373,26 @@ export const phiWethLP = {
 //
 
 
-
-
-
-
-
-
-
-
 export const tokenDictionary = {
     [ETH]: eth,
-    [WETH] :weth,
-    [WETHs] :weths,
-    [WETHw] :wethw,
-    [LP] :lp,
-    [LPs] :lps,
-    [LPw] :lpw,
-    [PHI] :phi,
-    [PHIs] :phis,
-    [PHIw] :phiw,
-    [LP2] :lp2
+    [WETH]: weth,
+    [WETHs]: weths,
+    [WETHw]: wethw,
+    [LP]: lp,
+    [LPs]: lps,
+    [LPw]: lpw,
+    [PHI]: phi,
+    [PHIs]: phis,
+    [PHIw]: phiw,
+    [LP2]: lp2
 }
 
 export const mintDictionary = {
-    [ETH] :eth,
-    [WETH] :weth,
-    [LP] :lp,
-    [PHI] :phi,
+    [ETH]: eth,
+    [WETH]: weth,
+    [LP]: lp,
+    [PHI]: phi,
 }
-
-
 
 
 export function getTrade(assetIn, assetOut) {
@@ -409,152 +408,204 @@ export const trades = {
     [ETH]: {
         [WETH]: {
             contract: weth,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await deposit(signer, weth,amt, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await deposit(signer, weth, amt, callStatic)
+            },
             needsApproval: false
         },
         [LP]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuyLP(signer, amt, minAmountOut, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapBuyLP(signer, amt, minAmountOut, true, callStatic)
+            },
             needsApproval: false
         },
         [PHI]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactETHForTokens(signer, uniswapRouter,amt, minAmountOut, phi.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactETHForTokens(signer, uniswapRouter, amt, minAmountOut, phi.address, receiver, 1200, callStatic)
+            },
             needsApproval: false
         },
         [WETHs]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, true, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapBuy(signer, amt, minAmountOut, true, true, callStatic)
+            },
             needsApproval: false
         },
         [WETHw]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, false, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapBuy(signer, amt, minAmountOut, false, true, callStatic)
+            },
             needsApproval: false
         },
     },
     [WETH]: {
         [ETH]: {
             contract: weth,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await withdraw(signer, weth,amt, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await withdraw(signer, weth, amt, callStatic)
+            },
             needsApproval: false
         },
         [LP]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuyLP(signer, amt, minAmountOut, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapBuyLP(signer, amt, minAmountOut, false, callStatic)
+            },
             needsApproval: true
         },
         [PHI]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, weth.address, phi.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, weth.address, phi.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
         [WETHs]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, true, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapBuy(signer, amt, minAmountOut, true, false, callStatic)
+            },
             needsApproval: true
         },
         [WETHw]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapBuy(signer, amt, minAmountOut, false, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapBuy(signer, amt, minAmountOut, false, false, callStatic)
+            },
             needsApproval: true
         },
     },
     [LP]: {
         [ETH]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSellLP(signer, amt, minAmountOut, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapSellLP(signer, amt, minAmountOut, callStatic)
+            },
             needsApproval: true
         },
         [LPs]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP(signer, amt, minAmountOut, true, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapStakeLP(signer, amt, minAmountOut, true, callStatic)
+            },
             needsApproval: true
         },
         [LPw]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP(signer, amt, minAmountOut, false, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapStakeLP(signer, amt, minAmountOut, false, callStatic)
+            },
             needsApproval: true
         },
         [LP2]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP2(signer, amt, minAmountOut, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapStakeLP2(signer, amt, minAmountOut, callStatic)
+            },
             needsApproval: true
         },
     },
     [PHI]: {
         [WETH]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, phi.address, weth.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, phi.address, weth.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
     },
     [LPs]: {
         [LPw]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, lps.address, lpw.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, lps.address, lpw.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
         [LP]: {
-             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP(signer, amt, minAmountOut, true, callStatic)},
+            contract: zapContract,
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapUnstakeLP(signer, amt, minAmountOut, true, callStatic)
+            },
             needsApproval: true
-         },
+        },
     },
     [LPw]: {
         [LPs]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, lpw.address, lps.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, lpw.address, lps.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
         [LP]: {
-                 contract: zapContract,
-                func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP(signer, amt, minAmountOut, false, callStatic)},
-                needsApproval: true
-             },
+            contract: zapContract,
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapUnstakeLP(signer, amt, minAmountOut, false, callStatic)
+            },
+            needsApproval: true
+        },
     },
     [PHIs]: {
         [PHIw]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, phis.address, phiw.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, phis.address, phiw.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
     },
     [PHIw]: {
         [PHIs]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, phiw.address, phis.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, phiw.address, phis.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
     },
     [WETHs]: {
         [WETHw]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, weths.address, wethw.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, weths.address, wethw.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
         [ETH]: {
-                 contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSell(signer, amt, minAmountOut, true, callStatic)},
+            contract: zapContract,
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapSell(signer, amt, minAmountOut, true, callStatic)
+            },
             needsApproval: true
-             },
+        },
     },
     [WETHw]: {
         [WETHs]: {
             contract: uniswapRouter,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await swapExactTokensForTokens(signer, uniswapRouter,amt, minAmountOut, wethw.address, weths.address, receiver, 1200, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await swapExactTokensForTokens(signer, uniswapRouter, amt, minAmountOut, wethw.address, weths.address, receiver, 1200, callStatic)
+            },
             needsApproval: true
         },
         [ETH]: {
-                 contract: zapContract,
-                    func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSell(signer, amt, minAmountOut, false, callStatic)},
-                    needsApproval: true
-                },
+            contract: zapContract,
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapSell(signer, amt, minAmountOut, false, callStatic)
+            },
+            needsApproval: true
+        },
     },
     [LP2]: {
         [LP]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapUnstakeLP2(signer, amt, minAmountOut, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => {
+                return await zapUnstakeLP2(signer, amt, minAmountOut, callStatic)
+            },
             needsApproval: true
         },
     },
@@ -574,7 +625,9 @@ export const mint = {
             },
         ],
         contract: zapContract,
-        mintFunc: async (signer, amt) => { return zapMint(signer, amt)},
+        mintFunc: async (signer, amt) => {
+            return zapMint(signer, amt)
+        },
         needsApproval: false
     },
     [WETH]: {
@@ -590,8 +643,12 @@ export const mint = {
             },
         ],
         contract: wethSplitContract,
-        mintFunc: async (signer, amt) => { return wethMint(signer, amt)},
-        burnFunc: async (signer, amt) => { return wethBurn(signer, amt)},
+        mintFunc: async (signer, amt) => {
+            return wethMint(signer, amt)
+        },
+        burnFunc: async (signer, amt) => {
+            return wethBurn(signer, amt)
+        },
         needsApproval: true
     },
     [LP]: {
@@ -607,8 +664,12 @@ export const mint = {
             },
         ],
         contract: lpSplitContract,
-        mintFunc: async (signer, amt) => { return lpMint(signer, amt)},
-        burnFunc: async (signer, amt) => { return lpBurn(signer, amt)},
+        mintFunc: async (signer, amt) => {
+            return lpMint(signer, amt)
+        },
+        burnFunc: async (signer, amt) => {
+            return lpBurn(signer, amt)
+        },
         needsApproval: true
     },
     [PHI]: {
@@ -624,8 +685,12 @@ export const mint = {
             },
         ],
         contract: phiSplitContract,
-        mintFunc: async (signer, amt) => { return phiMint(signer, amt)},
-        burnFunc: async (signer, amt) => { return phiBurn(signer, amt)},
+        mintFunc: async (signer, amt) => {
+            return phiMint(signer, amt)
+        },
+        burnFunc: async (signer, amt) => {
+            return phiBurn(signer, amt)
+        },
         needsApproval: true
     },
 }
@@ -639,11 +704,21 @@ export const staking = [
         token: phiWethLP,
         poolTokenA: weth,
         poolTokenB: phi,
-        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsPHIWETHContract, amt)},
-        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsPHIWETHContract, amt)},
-        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsPHIWETHContract)},
-        aprFunc: async () => { return await aprCalc.aprOfETHPHI()},
-        tvlFunc:  async () => { return await aprCalc.tvlEthPhi()},
+        stakeFunc: async (signer, amt) => {
+            return await stakingStake(signer, stakingRewardsPHIWETHContract, amt)
+        },
+        unStakeFunc: async (signer, amt) => {
+            return await stakingWithdraw(signer, stakingRewardsPHIWETHContract, amt)
+        },
+        claimFunc: async (signer) => {
+            return await stakingGetReward(signer, stakingRewardsPHIWETHContract)
+        },
+        aprFunc: async () => {
+            return await aprCalc.aprOfETHPHI()
+        },
+        tvlFunc: async () => {
+            return await aprCalc.tvlEthPhi()
+        },
     },
     {
         name: "ETHs-ETHw LPw",
@@ -652,11 +727,21 @@ export const staking = [
         token: lpw,
         poolTokenA: weths,
         poolTokenB: wethw,
-        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsLPWContract, amt)},
-        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsLPWContract, amt)},
-        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsLPWContract)},
-        aprFunc: async () => { return await aprCalc.aprOfLPw()},
-        tvlFunc:  async () => { return await aprCalc.tvlLpw()},
+        stakeFunc: async (signer, amt) => {
+            return await stakingStake(signer, stakingRewardsLPWContract, amt)
+        },
+        unStakeFunc: async (signer, amt) => {
+            return await stakingWithdraw(signer, stakingRewardsLPWContract, amt)
+        },
+        claimFunc: async (signer) => {
+            return await stakingGetReward(signer, stakingRewardsLPWContract)
+        },
+        aprFunc: async () => {
+            return await aprCalc.aprOfLPw()
+        },
+        tvlFunc: async () => {
+            return await aprCalc.tvlLpw()
+        },
     },
     {
         name: "ETHs-ETHw LPs",
@@ -665,11 +750,21 @@ export const staking = [
         token: lps,
         poolTokenA: weths,
         poolTokenB: wethw,
-        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsLPSContract, amt)},
-        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsLPSContract, amt)},
-        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsLPSContract)},
-        aprFunc: async () => { return await aprCalc.aprOfLPs()},
-        tvlFunc:  async () => { return await aprCalc.tvlLps()},
+        stakeFunc: async (signer, amt) => {
+            return await stakingStake(signer, stakingRewardsLPSContract, amt)
+        },
+        unStakeFunc: async (signer, amt) => {
+            return await stakingWithdraw(signer, stakingRewardsLPSContract, amt)
+        },
+        claimFunc: async (signer) => {
+            return await stakingGetReward(signer, stakingRewardsLPSContract)
+        },
+        aprFunc: async () => {
+            return await aprCalc.aprOfLPs()
+        },
+        tvlFunc: async () => {
+            return await aprCalc.tvlLps()
+        },
     },
     {
         name: "LPw-LPs LP",
@@ -678,10 +773,20 @@ export const staking = [
         token: lp2,
         poolTokenA: lps,
         poolTokenB: lpw,
-        stakeFunc: async (signer, amt) => { return await stakingStake(signer, stakingRewardsLP2Contract, amt)},
-        unStakeFunc: async (signer, amt) => { return await stakingWithdraw(signer, stakingRewardsLP2Contract, amt)},
-        claimFunc: async (signer) => { return await stakingGetReward(signer, stakingRewardsLP2Contract)},
-        aprFunc: async () => { return await aprCalc.aprOfLP2()},
-        tvlFunc:  async () => { return await aprCalc.tvlLp2()},
+        stakeFunc: async (signer, amt) => {
+            return await stakingStake(signer, stakingRewardsLP2Contract, amt)
+        },
+        unStakeFunc: async (signer, amt) => {
+            return await stakingWithdraw(signer, stakingRewardsLP2Contract, amt)
+        },
+        claimFunc: async (signer) => {
+            return await stakingGetReward(signer, stakingRewardsLP2Contract)
+        },
+        aprFunc: async () => {
+            return await aprCalc.aprOfLP2()
+        },
+        tvlFunc: async () => {
+            return await aprCalc.tvlLp2()
+        },
     }
 ]
