@@ -9,6 +9,9 @@ import {
     zapContract
 } from "../const/const";
 
+const MAXUINT = ethers.BigNumber.from("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
+
 export function roundString(value) {
     if (value) {
         let fVal = parseFloat(value)
@@ -25,6 +28,7 @@ export function roundString(value) {
         return "0"
     }
 }
+
 
 function numberWithCommas(x) {
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -51,7 +55,7 @@ export async function approve(provider, signer, contract, spender, amount) {
         signer
     );
 
-    return ethContract.approve(spender, amount.toString()).then((tx) => {
+    return ethContract.approve(spender, MAXUINT.toHexString()).then((tx) => {
         return provider.waitForTransaction(tx.hash).then(()=>{
                 return true
             })
@@ -199,7 +203,7 @@ export async function zapMint(signer, amountIn, callStatic) {
     }
 }
 
-export async function zapStakeLP(signer, amountIn, minAmountOut, future, ethValue, callStatic) {
+export async function zapStakeLP(signer, amountIn, minAmountOut, future, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -207,9 +211,9 @@ export async function zapStakeLP(signer, amountIn, minAmountOut, future, ethValu
     );
 
     if (callStatic) {
-        return await ethContract.callStatic.stakeLP(amountIn, minAmountOut, future, {value: ethValue})
+        return await ethContract.callStatic.stakeLP(amountIn, minAmountOut, future)
     } else {
-        return await ethContract.stakeLP(amountIn, minAmountOut, future, {value: ethValue})
+        return await ethContract.stakeLP(amountIn, minAmountOut, future)
     }
 }
 
@@ -227,7 +231,7 @@ export async function zapUnstakeLP(signer, amountIn, minAmountOut, future, callS
     }
 }
 
-export async function zapStakeLP2(signer, amountIn, minAmountOut, ethValue, callStatic) {
+export async function zapStakeLP2(signer, amountIn, minAmountOut, callStatic) {
     const ethContract = new ethers.Contract(
         zapContract.address,
         zapContract.abi,
@@ -235,9 +239,9 @@ export async function zapStakeLP2(signer, amountIn, minAmountOut, ethValue, call
     );
 
     if (callStatic) {
-        return await ethContract.callStatic.stakeLP2(amountIn, minAmountOut, {value: ethValue})
+        return await ethContract.callStatic.stakeLP2(amountIn, minAmountOut)
     } else {
-        return await ethContract.stakeLP2(amountIn, minAmountOut, {value: ethValue})
+        return await ethContract.stakeLP2(amountIn, minAmountOut)
     }
 }
 

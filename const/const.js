@@ -461,7 +461,7 @@ export const trades = {
         },
     },
     [LP]: {
-        [WETH]: {
+        [ETH]: {
             contract: zapContract,
             func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapSellLP(signer, amt, minAmountOut, callStatic)},
             needsApproval: true
@@ -478,7 +478,7 @@ export const trades = {
         },
         [LP2]: {
             contract: zapContract,
-            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP2(signer, amt, minAmountOut, 0, callStatic)},
+            func: async (signer, amt, minAmountOut, receiver, callStatic) => { return await zapStakeLP2(signer, amt, minAmountOut, callStatic)},
             needsApproval: true
         },
     },

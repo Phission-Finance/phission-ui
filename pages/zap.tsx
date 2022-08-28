@@ -57,11 +57,13 @@ const Zap: NextPage = () => {
 
 
     useEffect(() => {
-        if (assetInAmount.lte(assetInBalance)) {
-            handleSetAssetOutAmount()
-            handleSwapButtonState(true, trade)
-        } else {
-            handleSwapButtonState(false, trade)
+        if (assetInAmount && assetInBalance) {
+            if (assetInAmount.lte(assetInBalance)) {
+                handleSetAssetOutAmount()
+                handleSwapButtonState(true, trade)
+            } else {
+                handleSwapButtonState(false, trade)
+            }
         }
     }, [assetInAmount,assetInBalance, trade])
 
@@ -152,7 +154,7 @@ const Zap: NextPage = () => {
     function handleSwapButtonState(sufficientBalance: boolean, trade: trade|undefined) {
         console.log("handleSwapButtonState", sufficientBalance, staticCallError, approvalNeeded)
         if (!trade) {
-            setButtonState({text: 'Trade not possible', disabled: true})
+            setButtonState({text: 'Invalid Zap', disabled: true})
         } else if (!sufficientBalance) {
             if (buttonState.text != 'Insufficient Balance') {
                 setButtonState({text: 'Insufficient Balance', disabled: true})
