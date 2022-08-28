@@ -93,7 +93,7 @@ const Home: NextPage = () => {
                 <Value label={"LPs"}  value={lpsLp} token={undefined} symbol={"LP"} updater={undefined}/>
             </div>
             <div className={styles.row}>
-                <Value label={"PHI"} value={phiETH * ethUsdPrice.toNumber()} token={undefined} symbol={"$"} updater={undefined}/>
+                <Value label={"PHI"} value={(phiETH * ethUsdPrice.toNumber()).toFixed(2)} token={undefined} symbol={"$"} updater={undefined}/>
                 <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
                 <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
             </div>

@@ -20,8 +20,8 @@ const verifyHash = "0x5c3a609fc84334a2bedf159a9bd27d7e098e4a2ddca182e7bab3ad3d93
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    // chain.mainnet,
-      chain.ropsten,
+    chain.mainnet,
+      // chain.ropsten,
   ],
   [
     alchemyProvider({

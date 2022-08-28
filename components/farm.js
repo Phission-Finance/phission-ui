@@ -94,7 +94,7 @@ function Farm({tab, farm}) {
     }
 
     function handleSetMaxStaked() {
-        handleChangeInput(roundString(utils.formatUnits(staked.toString(), farm.token.decimals)))
+        handleChangeInput(roundString(utils.formatUnits(staked?.toString(), farm.token.decimals)))
     }
 
     async function openInNewTab(url) {
@@ -118,7 +118,7 @@ function Farm({tab, farm}) {
                 <Value label={"Staked"} value={staked ? staked : BigNumber.from(0)} token={farm.token}/>
                 <Value label={"Rewards"} value={earned} token={farm.token} updater={undefined}/>
                 <Balance label={farm.token.symbol} token={farm.token} setParentBalance={setBalance}/>
-                <Value label={"APR"} value={apr.toFixed(1).toString() + "%"} updater={undefined}/>
+                <Value label={"APR"} value={apr?.toFixed(1).toString() + "%"} updater={undefined}/>
             </div>
 
             <div className={styles.buttonContainer}>
