@@ -1,8 +1,5 @@
 import type {NextPage} from 'next';
 import styles from '../styles/Index.module.css';
-import SwapInput from '../components/swapInput'
-import Input from '../components/input'
-import SwapValue from '../components/swapValue'
 import Countdown from '../components/countdown'
 import FarmRow from '../components/farmRow'
 import {useEffect, useState} from "react";
@@ -18,6 +15,7 @@ const expectedMergeDate = "2022-09-15T04:20:00Z"
 
 const Home: NextPage = () => {
 
+    const provider = useProvider()
 
     const [init, setInit] = useState(false)
     const [tvl, setTvl] = useState(BigNumber.from(0))
@@ -32,7 +30,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         let priceInterval = setInterval(() => {
-            chainlinkLatestAnswer().then((price: BigNumber) => {
+            chainlinkLatestAnswer(provider).then((price: BigNumber) => {
                 if (!ethUsdPrice.eq(price)) {
                     setEthUsdPrice(price.div(1e8))
                 }
@@ -45,16 +43,14 @@ const Home: NextPage = () => {
         }
     })
 
-
     if (!init) {
-        chainlinkLatestAnswer().then((price: BigNumber) => {
+        chainlinkLatestAnswer(provider).then((price: BigNumber) => {
             if (!ethUsdPrice.eq(price)) {
                 setEthUsdPrice(price.div(1e8))
             }
         }).catch((err) => console.error(err))
-
         if (!aprCalc.init) {
-            aprCalc.initialize().then(() => {
+            aprCalc.initialize(provider).then(() => {
                 console.log("APRCalculator initialized", aprCalc)
                 handleUpdateValues()
 
@@ -104,7 +100,6 @@ const Home: NextPage = () => {
             <div className={styles.main}>
                 <table id="farmTable" className={styles.styledTable}>
                     <tbody>
-
                     <tr className={styles.styledTableHeaderRow}>
                         <th>Name</th>
                         <th>APR (%)</th>

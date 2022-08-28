@@ -7,16 +7,27 @@ import {roundString} from "../helpers/erc20";
 import {tokenDictionary, eth} from "../const/const";
 import uuid from "uuid";
 import {useAccount, useBalance} from "wagmi";
+import {mint} from "../const/const";
 
 
-export default function SwapInput({label, values, token, onChangeInput, onChangeAsset, onChangeBalance}) {
+export default function BurnInput({label, values, token, onChangeInput, onChangeAsset}) {
 
         const [query, setQuery] = useState("");
+        const [tokenOne, setTokenOne] = useState(undefined);
+        const [tokenTwo, setTokenTwo] = useState(undefined);
 
-        const { address, isConnecting, isDisconnected } = useAccount()
-        const { data: balance, isError, isLoading } = useBalance({
+
+
+        const { address } = useAccount()
+        const { data: balanceOne } = useBalance({
                 addressOrName: address,
-                token: token.symbol !== "ETH" ? token.address : "",
+                token: tokenOne?.address,
+                watch: true,
+        })
+
+        const { data: balanceTwo } = useBalance({
+                addressOrName: address,
+                token: tokenTwo?.address,
                 watch: true,
         })
 
@@ -28,23 +39,22 @@ export default function SwapInput({label, values, token, onChangeInput, onChange
         }, [query]);
 
         useEffect(() => {
-                if (onChangeBalance) {
-                        onChangeBalance(balance?.value)
+                if (mint[token.symbol].tokens[0].token.symbol !== tokenOne?.symbol) {
+                        setTokenOne(mint[token.symbol].tokens[0].token)
                 }
-        }, [balance])
+                if (mint[token.symbol].tokens[1].token.symbol !== tokenTwo?.symbol) {
+                        setTokenTwo(mint[token.symbol].tokens[1].token)
+                }
+        }, [token])
+
 
         function handleSetMax() {
-                if (token.symbol === eth.symbol) {
-                        if (balance?.value > 50000000000000000) {
-                                let max = balance.value - 50000000000000000
-                                setQuery(utils.formatUnits(max.toString(), token.decimals))
-                        }
+                if (balanceOne > balanceTwo) {
+                        setQuery(balanceTwo?.formatted)
                 } else {
-                        setQuery(balance.formatted)
+                        setQuery(balanceOne?.formatted)
                 }
         }
-
-
 
         function handleChangeDropdown(symbol) {
                 onChangeAsset(tokenDictionary[symbol])
@@ -54,14 +64,15 @@ export default function SwapInput({label, values, token, onChangeInput, onChange
         <div className={styles.container}>
                 <div>
                         <input min={0} value={query} className={styles.swapInput} type="number" onChange={event => setQuery(event.target.value)}/>
-                        <h4 className={styles.balance}>Bal: {roundString(balance?.formatted)}</h4>
+                        <h4 className={styles.balance}>{tokenOne?.symbol} Bal: {roundString(balanceOne?.formatted)}</h4>
+                        <h4 className={styles.balance}>{tokenTwo?.symbol} Bal: {roundString(balanceTwo?.formatted)}</h4>
                 </div>
 
                 <div>
-                        <DropdownButton className={styles.dropdownButton} id="dropdown-basic-button" title={token.symbol} onSelect={handleChangeDropdown}>
+                        <DropdownButton className={styles.dropdownButton} id="dropdown-basic-button" title={mint[token.symbol].burnName} onSelect={handleChangeDropdown}>
                                 {values.map((op, index) => (
                                     // eslint-disable-next-line react/jsx-key
-                                    <Dropdown.Item key={index} eventKey={op}>{op}</Dropdown.Item>
+                                    <Dropdown.Item key={index} eventKey={op}>{mint[op].burnName}</Dropdown.Item>
                                 ))}
                         </DropdownButton>
                         <button onClick={handleSetMax}>Set Max</button>

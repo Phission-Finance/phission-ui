@@ -6,10 +6,14 @@ import SwapValue from '../components/swapValue'
 import LoadingButton from '../components/loadingButton'
 import ApprovalButton from '../components/approvalButton'
 import {useEffect, useState} from "react";
-import {eth, tokenDictionary, trades, uniswapRouter, weth} from "../const/const";
-import {checkAllowance, checkBalance, approve, roundString} from '../helpers/erc20'
+import {
+    tokenDictionary,
+    trades,
+    uniswapRouter,
+    weth
+} from "../const/const";
 import {BigNumber, ethers, utils} from 'ethers'
-import {spans} from "next/dist/build/webpack/plugins/profiling-plugin";
+import {useAccount, useBalance, useContractRead, useProvider, useSigner} from "wagmi";
 
 type token = {
     symbol: string
@@ -28,8 +32,13 @@ type trade = {
 
 const Zap: NextPage = () => {
 
+    const { data: signer } = useSigner()
+
+    const { address, isConnecting, isDisconnected } = useAccount()
 
     const [init, setInit] = useState(false)
+
+    const [trade, setTrade] = useState(undefined)
 
     const [assetIn, setAssetIn] = useState(tokenDictionary["ETH"])
     const [assetInAmount, setAssetInAmount] = useState(BigNumber.from(0))
@@ -38,47 +47,52 @@ const Zap: NextPage = () => {
     const [assetOut, setAssetOut] = useState(tokenDictionary["WETH"])
     const [assetOutAmount, setAssetOutAmount] = useState(BigNumber.from(0))
 
-    const [slippage, setSlippage] = useState(1)
+    const [slippage, setSlippage] = useState("1")
 
     const [buttonState, setButtonState] = useState({text: 'Swap', disabled: true})
     const [approvalNeeded, setApprovalNeeded] = useState(false)
-
-    const [sufficientLiquidity, setSufficientLiquidity] = useState(true)
-    const [invalidSwap, setInvalidSwap] = useState(false)
+    const [staticCallError, setStaticCallError] = useState(false)
 
 
 
     useEffect(() => {
-
-        const jsonTrades = JSON.parse(JSON.stringify(trades))
-        if (!(assetIn.symbol in jsonTrades) || !(assetOut.symbol in jsonTrades[assetIn.symbol])) {
-            setInvalidSwap(true)
-        }else {
-            setInvalidSwap(false)
-            
-        if (assetInAmount.lte(assetInBalance)) {
-            handleSetAssetOutAmount()
-            handleSwapButtonState(true)
-        } else {
-            handleSwapButtonState(false)
+        if (assetInAmount && assetInBalance) {
+            if (assetInAmount.lte(assetInBalance)) {
+                handleSetAssetOutAmount()
+                handleSwapButtonState(true, trade)
+            } else {
+                handleSwapButtonState(false, trade)
+            }
         }
-    }
+    }, [assetInAmount,assetInBalance, trade])
+
+    useEffect(() => {
+        // @ts-ignore
+        if (trades[assetIn.symbol]) {
+            // @ts-ignore
+            if (trades[assetIn.symbol][assetOut.symbol]) {
+                // @ts-ignore
+                setTrade(trades[assetIn.symbol][assetOut.symbol])
+            } else {
+                setTrade(undefined)
+            }
+        } else  {
+            setTrade(undefined)
+        }
+    }, [assetIn, assetOut])
 
 
+    // const { data: calculatedAmountOut } = useContractRead({
+    //     addressOrName: getTradeAddress(assetIn, assetOut),
+    //     contractInterface: getTradeAbi(assetIn, assetOut),
+    //     functionName: getTradeFunctionName(assetIn, assetOut),
+    //     args: getTradeArgsFunction(assetIn, assetOut)(assetInAmount, BigNumber.from(0), address),
+    //     overrides: getTradeOverrideFunction(assetIn, assetOut)(assetInAmount, BigNumber.from(0), address),
+    //     watch: true,
+    //     on
+    // })
 
-
-                // setButtonState({text: 'Invalid Swap', disabled: true, action: {}})
-
-
-
-
-
-
-
-    }, [assetInAmount,assetInBalance, assetIn, assetOut])
-
-
-    function handleSetSlippage(val: number) {
+    function handleSetSlippage(val: string) {
         console.log("Set Slippage", val)
         setSlippage(val)
     }
@@ -94,13 +108,12 @@ const Zap: NextPage = () => {
     }
 
     function handleSetAssetOutAmount() {
-        // @ts-ignore
-        if (trades[assetIn.symbol]) {
-            // @ts-ignore
-            if (trades[assetIn.symbol][assetOut.symbol]) {
+
+        if (trade) {
+
                 if (!assetInAmount.isZero()) {
                     // @ts-ignore
-                    trades[assetIn.symbol][assetOut.symbol].func(assetInAmount,BigNumber.from(0), true).then((response: any) => {
+                    trade.func(signer,assetInAmount,BigNumber.from(0), address,true).then((response: any) => {
                         console.log("Static Call", response)
                         let amountOut: BigNumber
                         // @ts-ignore
@@ -117,34 +130,37 @@ const Zap: NextPage = () => {
                             setAssetOutAmount(amountOut)
                         }
 
-                        if (!sufficientLiquidity) {
-                            setSufficientLiquidity(true)
+                        if (staticCallError) {
+                            setStaticCallError(false)
                         }
                     }).catch((err: any) => {
+                        console.log("Static Call Error", err)
                         if (!assetOutAmount.isZero()) {
                             setAssetOutAmount(BigNumber.from(0))
                         }
 
-                        if (sufficientLiquidity) {
-                            setSufficientLiquidity(false)
+                        if (!staticCallError) {
+                            setStaticCallError(true)
                         }
                     })
                 }
-            }
+
         }
 
 
     }
 
-    function handleSwapButtonState(sufficientBalance: boolean) {
-        console.log("handleSwapButtonState", sufficientBalance, sufficientLiquidity, approvalNeeded)
-        if (!sufficientBalance) {
+    function handleSwapButtonState(sufficientBalance: boolean, trade: trade|undefined) {
+        console.log("handleSwapButtonState", sufficientBalance, staticCallError, approvalNeeded)
+        if (!trade) {
+            setButtonState({text: 'Invalid Zap', disabled: true})
+        } else if (!sufficientBalance) {
             if (buttonState.text != 'Insufficient Balance') {
                 setButtonState({text: 'Insufficient Balance', disabled: true})
             }
-        } else if (!sufficientLiquidity) {
-            if (buttonState.text != 'Insufficient Liquidity') {
-                setButtonState({text: 'Insufficient Liquidity', disabled: true})
+        } else if (staticCallError) {
+            if (buttonState.text != 'Error') {
+                setButtonState({text: 'Error', disabled: true})
             }
         } else if (assetInAmount.isZero() || approvalNeeded) {
             if (!buttonState.disabled || buttonState.text != 'Swap')  {
@@ -158,49 +174,40 @@ const Zap: NextPage = () => {
     }
 
     async function handleExecute() {
-        // @ts-ignore
-        if (trades[assetIn.symbol]) {
-            // @ts-ignore
-            if (trades[assetIn.symbol][assetOut.symbol]) {
+       if (trade){
                 // @ts-ignore
-                await trades[assetIn.symbol][assetOut.symbol].func(assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(slippage*10))).div(BigNumber.from(1000)), false)
-            }
+           await trade.func(signer,assetInAmount, assetOutAmount.mul(BigNumber.from(1000-(parseFloat(slippage)*10))).div(BigNumber.from(1000)), address,false)
         }
     }
 
-    function getTrade() {
-        // @ts-ignore
-        if (trades[assetIn.symbol]) {
-            // @ts-ignore
-            if (trades[assetIn.symbol][assetOut.symbol]) {
-                // @ts-ignore
-                return trades[assetIn.symbol][assetOut.symbol]
-            }
-        }
-        return {}
-    }
+    // function getTrade() {
+    //     // @ts-ignore
+    //     if (trades[assetIn.symbol]) {
+    //         // @ts-ignore
+    //         if (trades[assetIn.symbol][assetOut.symbol]) {
+    //             // @ts-ignore
+    //             return trades[assetIn.symbol][assetOut.symbol]
+    //         }
+    //     }
+    //     return {}
+    // }
+
 
     return (
     <div className={styles.container}>
 
-
         <main className={styles.main}>
-
             <SwapInput label={"Asset In"} values={Object.keys(tokenDictionary).sort()}
                        token={assetIn}
                        onChangeInput={handleAssetInValueChange} onChangeAsset={setAssetIn}
                        onChangeBalance={setAssetInBalance}/>
 
-
             <SwapValue label={"Asset Out"} values={Object.keys(tokenDictionary).sort()}
                        onChangeAsset={setAssetOut} value={assetOutAmount} token={assetOut}/>
 
-
-        {invalidSwap ? <h1>Invalid Zap</h1> : null}
-
             <Input label={"Slippage"} value={slippage} onChangeInput={handleSetSlippage} unit={"%"} small={true}></Input>
 
-            <ApprovalButton tokenIn={assetIn} spender={getTrade()}
+            <ApprovalButton tokenIn={assetIn} spender={trade}
                             tokenInAmount={assetInAmount} setApprovalNeeded={setApprovalNeeded}></ApprovalButton>
             <LoadingButton text={buttonState.text} action={handleExecute} disabled={buttonState.disabled}
                            width={undefined}/>

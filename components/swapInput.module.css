@@ -11,7 +11,7 @@
 }
 
 .swapInput {
-    border: none;
+    border: 1px solid #460884;
     background-color: white;
     border: 1px solid #460884;
 
@@ -49,15 +49,14 @@
 
 
 .dropdownButton button {
-    width: 100px;
+    min-width: 100px;
 }
 .value {
-    border: none;
+    border: 1px solid #460884;
     background-color: white;
     border: 1px solid #460884;
 
     border-radius: 8px;
-    /*border-radius: 4px;*/
     text-align: right;
     font-size: larger;
     width: 250px;
