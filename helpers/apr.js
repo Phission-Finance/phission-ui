@@ -1,14 +1,28 @@
-import {balanceOf, getBalance, getRewardForDuration, rewardsDuration, totalSupply} from "./erc20";
+import {balanceOf, getRewardForDuration, rewardsDuration, totalSupply} from "./erc20";
 import {
     lp,
     lp2,
-    lps, LPs_LPw_Pool, lpw, phi, phis, PHIs_PHIw_Pool, phiw,
+    lps,
+    LPs_LPw_Pool,
+    lpw,
+    phi,
+    phis,
+    PHIs_PHIw_Pool,
+    phiw,
     phiWethLP,
     stakingRewardsLP2Contract,
-    stakingRewardsLPSContract, stakingRewardsLPWContract,
-    stakingRewardsPHIWETHContract, weth, WETH_PHI_Pool, weths, WETHs_WETHw_Pool, wethSplitContract, wethw
+    stakingRewardsLPSContract,
+    stakingRewardsLPWContract,
+    stakingRewardsPHIWETHContract,
+    weth,
+    WETH_PHI_Pool,
+    weths,
+    WETHs_WETHw_Pool,
+    wethSplitContract,
+    wethw
 } from "../const/const";
 import {BigNumber} from "ethers";
+
 const EventEmitter = require('events');
 
 
@@ -339,130 +353,130 @@ class APRCalculator {
             await new Promise(resolve => this.ethphilock.once('initialized', resolve));
         }
         return this.TOKENS_TO_BE_DISTRIBUTED_ETH_PHI *
-            secondsInYear / this.DAYS_OF_DISTRIBUTION_ETH_PHI * 100  *
+            secondsInYear / this.DAYS_OF_DISTRIBUTION_ETH_PHI * 100 *
             this.WETH_IN_GOV_POOL / this.PHI_IN_GOV_POOL / (
                 this.WETH_IN_GOV_POOL * 2 *
                 this.ETH_PHI_LP_STAKED / this.ETH_PHI_LP_SUPPLY)
     }
-    
-    
+
+
     async tvlLp2() {
         if (!this.init) {
             await new Promise(resolve => this.lp2lock.once('initialized', resolve));
         }
         return (this.LPw_IN_LP2 * ((this.ETHw_IN_ETH_POOL -
-                Math.min(this.ETHs_IN_ETH_POOL,
-                    this.ETHw_IN_ETH_POOL)) *
-            Math.min(this.ETHs_IN_ETH_POOL /
-                this.ETHw_IN_ETH_POOL
-             / (Math.min(
-                this.ETHs_IN_ETH_POOL
-             / 
-                this.ETHw_IN_ETH_POOL
-            , 
-                    this.ETHw_IN_ETH_POOL /
-                this.ETHs_IN_ETH_POOL
-            ) + 1), 1 / (Math
-                .min(
-                        this.ETHs_IN_ETH_POOL /
-                    this.ETHw_IN_ETH_POOL,
-                    this.ETHw_IN_ETH_POOL /
-                    this.ETHs_IN_ETH_POOL
-                ) + 1)) + (
-                this.ETHs_IN_ETH_POOL
-             - Math.min(
-                this.ETHs_IN_ETH_POOL
-            , this.ETHw_IN_ETH_POOL)) * Math
-                .min(this.ETHw_IN_ETH_POOL /
-                    this.ETHs_IN_ETH_POOL
-                 / (Math.min(
-                    this.ETHs_IN_ETH_POOL
-                 / 
-                    this.ETHw_IN_ETH_POOL
-                , 
-                        this.ETHw_IN_ETH_POOL /
-                    this.ETHs_IN_ETH_POOL
-                ) + 1), 1 / (Math
-                    .min(
+                        Math.min(this.ETHs_IN_ETH_POOL,
+                            this.ETHw_IN_ETH_POOL)) *
+                    Math.min(this.ETHs_IN_ETH_POOL /
+                        this.ETHw_IN_ETH_POOL
+                        / (Math.min(
+                            this.ETHs_IN_ETH_POOL
+                            /
+                            this.ETHw_IN_ETH_POOL
+                            ,
+                            this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                        ) + 1), 1 / (Math
+                        .min(
                             this.ETHs_IN_ETH_POOL /
-                        this.ETHw_IN_ETH_POOL,
-                        this.ETHw_IN_ETH_POOL /
+                            this.ETHw_IN_ETH_POOL,
+                            this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                        ) + 1)) + (
                         this.ETHs_IN_ETH_POOL
-                    ) + 1)) + Math.min(
-                this.ETHs_IN_ETH_POOL
-            , this.ETHw_IN_ETH_POOL)) * Math
-            .min(this.LPw_IN_LP2 / this.LPs_IN_LP2 / (
-                Math.min(this.LPw_IN_LP2 /
-                    this.LPs_IN_LP2
-                , this.LPs_IN_LP2 /
-                    this.LPw_IN_LP2
-                ) + 1), 1 / (Math.min(
-                this.LPw_IN_LP2
-             / this.LPs_IN_LP2,
-                this.LPs_IN_LP2
-             / this.LPw_IN_LP2) + 1)) /
-            this.LP_SUPPLY + this.LPs_IN_LP2 * ((
-            this.ETHw_IN_ETH_POOL
-         - Math.min(
-            this.ETHs_IN_ETH_POOL
-        , this.ETHw_IN_ETH_POOL)) * Math
-            .min(this.ETHs_IN_ETH_POOL /
-                this.ETHw_IN_ETH_POOL
-             / (Math.min(
-                this.ETHs_IN_ETH_POOL
-             / 
-                this.ETHw_IN_ETH_POOL
-            , 
-                    this.ETHw_IN_ETH_POOL /
-                this.ETHs_IN_ETH_POOL
-            ) + 1), 1 / (Math
-                .min(
-                        this.ETHs_IN_ETH_POOL /
-                    this.ETHw_IN_ETH_POOL,
-                    this.ETHw_IN_ETH_POOL /
+                        - Math.min(
+                            this.ETHs_IN_ETH_POOL
+                            , this.ETHw_IN_ETH_POOL)) * Math
+                        .min(this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                            / (Math.min(
+                                this.ETHs_IN_ETH_POOL
+                                /
+                                this.ETHw_IN_ETH_POOL
+                                ,
+                                this.ETHw_IN_ETH_POOL /
+                                this.ETHs_IN_ETH_POOL
+                            ) + 1), 1 / (Math
+                            .min(
+                                this.ETHs_IN_ETH_POOL /
+                                this.ETHw_IN_ETH_POOL,
+                                this.ETHw_IN_ETH_POOL /
+                                this.ETHs_IN_ETH_POOL
+                            ) + 1)) + Math.min(
+                        this.ETHs_IN_ETH_POOL
+                        , this.ETHw_IN_ETH_POOL)) * Math
+                    .min(this.LPw_IN_LP2 / this.LPs_IN_LP2 / (
+                        Math.min(this.LPw_IN_LP2 /
+                            this.LPs_IN_LP2
+                            , this.LPs_IN_LP2 /
+                            this.LPw_IN_LP2
+                        ) + 1), 1 / (Math.min(
+                        this.LPw_IN_LP2
+                        / this.LPs_IN_LP2,
+                        this.LPs_IN_LP2
+                        / this.LPw_IN_LP2) + 1)) /
+                this.LP_SUPPLY + this.LPs_IN_LP2 * ((
+                    this.ETHw_IN_ETH_POOL
+                    - Math.min(
+                        this.ETHs_IN_ETH_POOL
+                        , this.ETHw_IN_ETH_POOL)) * Math
+                    .min(this.ETHs_IN_ETH_POOL /
+                        this.ETHw_IN_ETH_POOL
+                        / (Math.min(
+                            this.ETHs_IN_ETH_POOL
+                            /
+                            this.ETHw_IN_ETH_POOL
+                            ,
+                            this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                        ) + 1), 1 / (Math
+                        .min(
+                            this.ETHs_IN_ETH_POOL /
+                            this.ETHw_IN_ETH_POOL,
+                            this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                        ) + 1)) + (
                     this.ETHs_IN_ETH_POOL
-                ) + 1)) + (
-            this.ETHs_IN_ETH_POOL
-         - Math.min(
-            this.ETHs_IN_ETH_POOL
-        , this.ETHw_IN_ETH_POOL)) * Math
-            .min(this.ETHw_IN_ETH_POOL /
-                this.ETHs_IN_ETH_POOL
-             / (Math.min(
-                this.ETHs_IN_ETH_POOL
-             / 
-                this.ETHw_IN_ETH_POOL
-            , 
-                    this.ETHw_IN_ETH_POOL /
-                this.ETHs_IN_ETH_POOL
-            ) + 1), 1 / (Math
-                .min(
-                        this.ETHs_IN_ETH_POOL /
-                    this.ETHw_IN_ETH_POOL,
-                    this.ETHw_IN_ETH_POOL /
+                    - Math.min(
+                        this.ETHs_IN_ETH_POOL
+                        , this.ETHw_IN_ETH_POOL)) * Math
+                    .min(this.ETHw_IN_ETH_POOL /
+                        this.ETHs_IN_ETH_POOL
+                        / (Math.min(
+                            this.ETHs_IN_ETH_POOL
+                            /
+                            this.ETHw_IN_ETH_POOL
+                            ,
+                            this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                        ) + 1), 1 / (Math
+                        .min(
+                            this.ETHs_IN_ETH_POOL /
+                            this.ETHw_IN_ETH_POOL,
+                            this.ETHw_IN_ETH_POOL /
+                            this.ETHs_IN_ETH_POOL
+                        ) + 1)) + Math.min(
                     this.ETHs_IN_ETH_POOL
-                ) + 1)) + Math.min(
-            this.ETHs_IN_ETH_POOL
-        , this.ETHw_IN_ETH_POOL)) * Math
-            .min(this.LPs_IN_LP2 / this.LPw_IN_LP2 / (
-                Math.min(this.LPw_IN_LP2 /
-                    this.LPs_IN_LP2
-                , this.LPs_IN_LP2 /
-                    this.LPw_IN_LP2
-                ) + 1), 1 / (Math.min(
-                this.LPw_IN_LP2
-             / this.LPs_IN_LP2,
-                this.LPs_IN_LP2
-             / this.LPw_IN_LP2) + 1)) /
-            this.LP_SUPPLY) * this.LP2_STAKED /
+                    , this.ETHw_IN_ETH_POOL)) * Math
+                    .min(this.LPs_IN_LP2 / this.LPw_IN_LP2 / (
+                        Math.min(this.LPw_IN_LP2 /
+                            this.LPs_IN_LP2
+                            , this.LPs_IN_LP2 /
+                            this.LPw_IN_LP2
+                        ) + 1), 1 / (Math.min(
+                        this.LPw_IN_LP2
+                        / this.LPs_IN_LP2,
+                        this.LPs_IN_LP2
+                        / this.LPw_IN_LP2) + 1)) /
+                this.LP_SUPPLY) * this.LP2_STAKED /
             this.LP2_SUPPLY
-        
+
     }
 
 
-    async tvlLps() {
+    async tvlLpw() {
         if (!this.init) {
-            await new Promise(resolve => this.lpslock.once('initialized', resolve));
+            await new Promise(resolve => this.lpwlock.once('initialized', resolve));
         }
         return ((this.ETHw_IN_ETH_POOL - Math.min(
                     this.ETHs_IN_ETH_POOL,
@@ -503,9 +517,9 @@ class APRCalculator {
             this.LPw_STAKED / this.LPw_SUPPLY
     }
 
-    async tvlLpw() {
+    async tvlLps() {
         if (!this.init) {
-            await new Promise(resolve => this.lpwlock.once('initialized', resolve));
+            await new Promise(resolve => this.lpslock.once('initialized', resolve));
         }
 
         return ((this.ETHw_IN_ETH_POOL - Math.min(
@@ -553,7 +567,7 @@ class APRCalculator {
         }
 
 
-        return this.WETH_IN_GOV_POOL*2*this.ETH_PHI_LP_STAKED/this.ETH_PHI_LP_SUPPLY
+        return this.WETH_IN_GOV_POOL * 2 * this.ETH_PHI_LP_STAKED / this.ETH_PHI_LP_SUPPLY
     }
 
     tvl() {
@@ -569,63 +583,62 @@ class APRCalculator {
     // }
 
     phiInEth() {
-        return this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL
+        return this.WETH_IN_GOV_POOL / this.PHI_IN_GOV_POOL
     }
 
     phisInEth() {
-        return Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1),1/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1))*this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL
+        return Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1), 1 / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1)) * this.WETH_IN_GOV_POOL / this.PHI_IN_GOV_POOL
     }
 
     phiwInEth() {
-        return Math.min(this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1),1/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1))*this.WETH_IN_GOV_POOL/this.PHI_IN_GOV_POOL
+        return Math.min(this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1), 1 / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1)) * this.WETH_IN_GOV_POOL / this.PHI_IN_GOV_POOL
     }
 
 
     wethsInEth() {
-        return Math.min(this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))
+        return Math.min(this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1))
     }
 
     wethwInEth() {
-        return Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))
+        return Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1))
     }
 
 
     phisInEth() {
-        return Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1),1/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1))
+        return Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1), 1 / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1))
     }
 
 
     phiwInEth() {
-        return Math.min(this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1),1/(Math.min(this.PHIw_IN_PHI_POOL/this.PHIs_IN_PHI_POOL,this.PHIs_IN_PHI_POOL/this.PHIw_IN_PHI_POOL)+1))
+        return Math.min(this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1), 1 / (Math.min(this.PHIw_IN_PHI_POOL / this.PHIs_IN_PHI_POOL, this.PHIs_IN_PHI_POOL / this.PHIw_IN_PHI_POOL) + 1))
     }
 
 
     lpwInLp() {
-        return Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1),1/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1))
+        return Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1), 1 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1))
     }
 
     lpsInLp() {
-        return Math.min(this.LPs_IN_LP2/this.LPw_IN_LP2/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1),1/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1))
+        return Math.min(this.LPs_IN_LP2 / this.LPw_IN_LP2 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1), 1 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1))
     }
 
 
     lpwInEth() {
-        return ((this.ETHw_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+(this.ETHs_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1),1/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1))/this.LP_SUPPLY
+        return ((this.ETHw_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + (this.ETHs_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1), 1 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1)) / this.LP_SUPPLY
     }
 
     lpsInEth() {
-        return ((this.ETHw_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+(this.ETHs_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.LPs_IN_LP2/this.LPw_IN_LP2/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1),1/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1))/this.LP_SUPPLY
+        return ((this.ETHw_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + (this.ETHs_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.LPs_IN_LP2 / this.LPw_IN_LP2 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1), 1 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1)) / this.LP_SUPPLY
     }
 
 
     lpInEth() {
-        return ((this.ETHw_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+(this.ETHs_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))/this.LP_SUPPLY
+        return ((this.ETHw_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + (this.ETHs_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) / this.LP_SUPPLY
     }
 
     lp2InEth() {
-        return (this.LPs_IN_LP2*((this.ETHw_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+(this.ETHs_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1),1/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1))/this.LP_SUPPLY+this.LPw_IN_LP2*((this.ETHw_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+(this.ETHs_IN_ETH_POOL-Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1),1/(Math.min(this.ETHs_IN_ETH_POOL/this.ETHw_IN_ETH_POOL,this.ETHw_IN_ETH_POOL/this.ETHs_IN_ETH_POOL)+1))+Math.min(this.ETHs_IN_ETH_POOL,this.ETHw_IN_ETH_POOL))*Math.min(this.LPs_IN_LP2/this.LPw_IN_LP2/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1),1/(Math.min(this.LPw_IN_LP2/this.LPs_IN_LP2,this.LPs_IN_LP2/this.LPw_IN_LP2)+1))/this.LP_SUPPLY)/this.LP2_SUPPLY
+        return (this.LPs_IN_LP2 * ((this.ETHw_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + (this.ETHs_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1), 1 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1)) / this.LP_SUPPLY + this.LPw_IN_LP2 * ((this.ETHw_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + (this.ETHs_IN_ETH_POOL - Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1), 1 / (Math.min(this.ETHs_IN_ETH_POOL / this.ETHw_IN_ETH_POOL, this.ETHw_IN_ETH_POOL / this.ETHs_IN_ETH_POOL) + 1)) + Math.min(this.ETHs_IN_ETH_POOL, this.ETHw_IN_ETH_POOL)) * Math.min(this.LPs_IN_LP2 / this.LPw_IN_LP2 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1), 1 / (Math.min(this.LPw_IN_LP2 / this.LPs_IN_LP2, this.LPs_IN_LP2 / this.LPw_IN_LP2) + 1)) / this.LP_SUPPLY) / this.LP2_SUPPLY
     }
-
 
 
 }
