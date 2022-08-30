@@ -1,4 +1,4 @@
-import Navbar from "./navbar";
+// import Navbar from "./navbar";
 import styles from "./layout.module.css";
 import {useAccount} from "wagmi";
 import {ConnectButton} from "@rainbow-me/rainbowkit";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import ghLogo from '../assets/github.svg'
 import twitterLogo from '../assets/twitter.svg'
 import discordLogo from '../assets/discord.svg'
+import Navbar from "./navbar";
 
 export default function Layout({children}) {
     const {isConnected} = useAccount();

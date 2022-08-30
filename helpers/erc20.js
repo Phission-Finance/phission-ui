@@ -184,9 +184,9 @@ export async function zapSellLP(signer, amountIn, minAmountOut, callStatic) {
     );
 
     if (callStatic) {
-        return await ethContract.callStatic.sellLp(amountIn, minAmountOut);
+        return await ethContract.callStatic.sellLP(amountIn, minAmountOut);
     } else {
-        return await ethContract.sellLp(amountIn, minAmountOut);
+        return await ethContract.sellLP(amountIn, minAmountOut);
     }
 }
 

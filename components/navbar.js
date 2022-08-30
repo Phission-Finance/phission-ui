@@ -1,20 +1,20 @@
 import Head from "next/head";
 import Link from "next/link";
 import styles from "./navbar.module.css";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { tokenDictionary } from "../const/const";
+import {ConnectButton} from "@rainbow-me/rainbowkit";
+import {tokenDictionary} from "../const/const";
 import LoadingButton from "./loadingButton";
-import { useAccount } from "wagmi";
+import {useAccount} from "wagmi";
 import logo from "../assets/logo2.svg";
 import Image from "next/image";
 
 export default function Navbar() {
-    const { isConnected } = useAccount();
+    const {isConnected} = useAccount();
 
     async function addAssetsToWallet() {
         for (const [key, t] of Object.entries(tokenDictionary)) {
             // @ts-ignore
-            addAssetToWallet(t.address, t.symbol, t.decimals);
+            await addAssetToWallet(t.address, t.symbol, t.decimals);
         }
     }
 
@@ -48,7 +48,7 @@ export default function Navbar() {
                 <div className={styles.logo}>
                     <Link href="/">
                         <a>
-                            <Image src={logo} alt={"phission"} layout="fill" objectFit="contain" />
+                            <Image src={logo} alt={"phission"} layout="fill" objectFit="contain"/>
                         </a>
                     </Link>
                 </div>
@@ -94,7 +94,7 @@ export default function Navbar() {
                         width={"100px"}
                     />
 
-                    <ConnectButton />
+                    <ConnectButton/>
                 </div>
             </header>
         </>

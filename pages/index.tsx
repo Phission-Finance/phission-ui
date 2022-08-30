@@ -8,6 +8,7 @@ import {chainlinkLatestAnswer} from '../helpers/erc20'
 import aprCalc from '../helpers/apr'
 import {BigNumber} from 'ethers'
 import Value from "../components/value";
+import LoadingSpinner from "../components/loadingSpinner";
 import {useProvider} from "wagmi";
 
 const expectedMergeDate = "2022-09-15T04:20:00Z"
@@ -19,6 +20,7 @@ const Home: NextPage = () => {
 
     const [init, setInit] = useState(false)
     const [tvl, setTvl] = useState(BigNumber.from(0))
+    const [loading, setLoading] = useState(true)
     const [wethwETH, setWethwETH] = useState("0")
     const [wethsETH, setWethsETH] = useState("0")
     const [phiETH, setPhiETH] = useState(0)
@@ -70,6 +72,7 @@ const Home: NextPage = () => {
         setPhiwPHI(aprCalc.phiwInEth().toFixed(3))
         setLpsLp(aprCalc.lpsInLp().toFixed(3))
         setLpwLp(aprCalc.lpwInLp().toFixed(3))
+        setLoading(false)
     }
 
 
@@ -79,22 +82,34 @@ const Home: NextPage = () => {
                 <Countdown text={"Time To Merge"} endDate={expectedMergeDate}/>
             </div>
             <div className={styles.main}>
-                <div className={styles.row}>
-                    <Value label={"TVL"} value={tvl} token={weth} symbol={"Ξ"} updater={undefined}/>
-                    <Value label={"TVL"} value={tvl.mul(ethUsdPrice)} token={weth} symbol={"$"} updater={undefined}/>
-                </div>
-                <div className={styles.row}>
-                    <Value label={"WETHw"} value={wethwETH} token={undefined} symbol={"Ξ"} updater={undefined}/>
-                    <Value label={"WETHs"} value={wethsETH} token={undefined} symbol={"Ξ"} updater={undefined}/>
-                    <Value label={"LPw"} value={lpwLp} token={undefined} symbol={"LP"} updater={undefined}/>
-                    <Value label={"LPs"} value={lpsLp} token={undefined} symbol={"LP"} updater={undefined}/>
-                </div>
-                <div className={styles.row}>
-                    <Value label={"PHI"} value={(phiETH * ethUsdPrice.toNumber()).toFixed(2)} token={undefined}
-                           symbol={"$"} updater={undefined}/>
-                    <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
-                    <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"} updater={undefined}/>
-                </div>
+                {
+                    loading ? <LoadingSpinner/> :
+                        <>
+                            <div className={styles.row}>
+                                <Value label={"TVL"} value={tvl} token={weth} symbol={"Ξ"} updater={undefined}/>
+                                <Value label={"TVL"} value={tvl.mul(ethUsdPrice)} token={weth} symbol={"$"}
+                                       updater={undefined}/>
+                            </div>
+                            <div className={styles.row}>
+                                <Value label={"WETHw"} value={wethwETH} token={undefined} symbol={"Ξ"}
+                                       updater={undefined}/>
+                                <Value label={"WETHs"} value={wethsETH} token={undefined} symbol={"Ξ"}
+                                       updater={undefined}/>
+                                <Value label={"LPw"} value={lpwLp} token={undefined} symbol={"LP"} updater={undefined}/>
+                                <Value label={"LPs"} value={lpsLp} token={undefined} symbol={"LP"} updater={undefined}/>
+                            </div>
+                            <div className={styles.row}>
+                                <Value label={"PHI"} value={(phiETH * ethUsdPrice.toNumber()).toFixed(2)}
+                                       token={undefined}
+                                       symbol={"$"} updater={undefined}/>
+                                <Value label={"PHIw"} value={phiwPHI} token={undefined} symbol={"PHI"}
+                                       updater={undefined}/>
+                                <Value label={"PHIs"} value={phisPHI} token={undefined} symbol={"PHI"}
+                                       updater={undefined}/>
+                            </div>
+                        </>
+                }
+
 
             </div>
             <div className={styles.main}>

@@ -8,12 +8,17 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import bg from '../assets/background.png'
 import favicon from '../assets/favicon.ico'
-import Layout from '../components/layout'
+// import Layout from '../components/layout'
 import ErrorBoundary from '../components/errorBoundary'
 import {useRouter} from "next/router";
 import {utils} from "ethers";
 import {useState} from "react";
 import Head from "next/head";
+
+import dynamic from 'next/dynamic'
+const Layout = dynamic(() => import("../components/layout"), {
+    ssr: false,
+});
 
 
 const verifyHash = "0x5c3a609fc84334a2bedf159a9bd27d7e098e4a2ddca182e7bab3ad3d9362965d"
