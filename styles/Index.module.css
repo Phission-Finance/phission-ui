@@ -51,7 +51,8 @@
 
 .styledTableHeaderRow th {
     /*background-color: #009879;*/
-    color: #ffffff;
+
+    color: #460884;
     text-align: left;
 }
 
@@ -59,6 +60,7 @@
 .styledTable td {
     padding: 10px 15px;
     text-align: left;
+
 }
 
 

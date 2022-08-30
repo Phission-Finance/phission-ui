@@ -63,13 +63,13 @@ const Home: NextPage = () => {
 
     function handleUpdateValues() {
         setTvl(aprCalc.tvl())
-        setWethwETH(aprCalc.wethwInEth().toFixed(2))
-        setWethsETH(aprCalc.wethsInEth().toFixed(2))
+        setWethwETH(aprCalc.wethwInEth().toFixed(3))
+        setWethsETH(aprCalc.wethsInEth().toFixed(3))
         setPhiETH(aprCalc.phiInEth())
-        setPhisPHI(aprCalc.phisInEth().toFixed(2))
-        setPhiwPHI(aprCalc.phiwInEth().toFixed(2))
-        setLpsLp(aprCalc.lpsInLp().toFixed(2))
-        setLpwLp(aprCalc.lpwInLp().toFixed(2))
+        setPhisPHI(aprCalc.phisInEth().toFixed(3))
+        setPhiwPHI(aprCalc.phiwInEth().toFixed(3))
+        setLpsLp(aprCalc.lpsInLp().toFixed(3))
+        setLpwLp(aprCalc.lpwInLp().toFixed(3))
     }
 
 
