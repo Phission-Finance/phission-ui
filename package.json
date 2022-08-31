@@ -8,7 +8,7 @@
     "deploy": "gh-pages --no-history -d build -t true",
     "dev": "NODE_OPTIONS='--inspect'  next dev",
     "build": "next build ",
-    "export": "next export -o build/ && touch ./build/.nojekyll && cp ./CNAME ./build",
+    "export": "next export -o build/ && touch ./build/.nojekyll && cp ./CNAME ./build && cp ./assets/Phission_Logo_Transparent_200x200.png ./build",
     "start": "next start",
     "lint": "next lint"
   },
