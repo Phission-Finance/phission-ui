@@ -14,6 +14,7 @@ import {swapExactTokensForTokens} from "../helpers/erc20";
 
 const Redeem: NextPage = () => {
     const expectedRedeemDate = "2022-09-20T00:00:00Z"
+    const expectedMergeDate = "2022-09-15T04:20:00Z"
 
     const {address, isConnecting, isDisconnected} = useAccount()
 
@@ -119,9 +120,6 @@ const Redeem: NextPage = () => {
     return (
         <div className={styles.container}>
             <div className={styles.main}>
-                <Countdown text={"Time To Redeem"} endDate={expectedRedeemDate}/>
-            </div>
-            <div className={styles.main}>
                 <h4>Redeem Tokens</h4>
 
                 <SwapInput label={"Redeem Asset"}
@@ -134,18 +132,24 @@ const Redeem: NextPage = () => {
                                disabled={redeemButtonState.disabled || !writeRedeemToken} width={undefined}/>
             </div>
             <div className={styles.main}>
-                <h4>Redeem from Treasury</h4>
-                <Balance label={phi.symbol} token={phi} setParentBalance={(val: { value: SetStateAction<BigNumber>; }) => {
-                        setPhiBalance(val.value)
-                    }}/>
-                    <ApprovalButton tokenIn={phi} tokenInAmount={phiBalance} spender={{
-                        contract: treasury,
-                        needsApproval: true
-                    }} setApprovalNeeded={setApprovalNeeded} />
-                    <LoadingButton text={treasuryRedeemButtonState.text} action={async () => await writeRedeemTreasury?.()} disabled={treasuryRedeemButtonState.disabled || !writeRedeemTreasury} width={undefined} />
-                </div>
-        </div>
+                <Countdown text={"Treasury Redemption"} endDate={expectedRedeemDate}/>
+            </div>
+
+            </div>
     );
 };
 
 export default Redeem;
+
+
+// <div className={styles.main} hidden={true}>
+//     <h4>Redeem from Treasury</h4>
+//     <Balance label={phi.symbol} token={phi} setParentBalance={(val: { value: SetStateAction<BigNumber>; }) => {
+//         setPhiBalance(val?.value)
+//     }}/>
+//     <ApprovalButton tokenIn={phi} tokenInAmount={phiBalance} spender={{
+//         contract: treasury,
+//         needsApproval: true
+//     }} setApprovalNeeded={setApprovalNeeded} />
+//     <LoadingButton text={treasuryRedeemButtonState.text} action={async () => await writeRedeemTreasury?.()} disabled={treasuryRedeemButtonState.disabled || !writeRedeemTreasury} width={undefined} />
+// </div>
